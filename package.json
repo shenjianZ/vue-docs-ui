@@ -1,0 +1,86 @@
+{
+  "name": "vue-docs-ui",
+  "version": "1.0.0",
+  "description": "一个基于Vue 3的现代化文档网站组件库，支持YAML配置和Markdown渲染，开箱即用的文档解决方案",
+  "main": "dist/vue-docs-ui.umd.js",
+  "module": "dist/vue-docs-ui.es.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "USAGE.md",
+    "QUICK-START.md"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/vue-docs-ui.es.js",
+      "require": "./dist/vue-docs-ui.umd.js"
+    },
+    "./dist/style.css": "./dist/style.css"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:lib": "vite build --config vite.config.lib.js",
+    "preview": "vite preview",
+    "serve": "vite preview",
+    "type-check": "vue-tsc --noEmit",
+    "prepublishOnly": "npm run build:lib",
+    "publish:check": "node scripts/publish.js",
+    "publish:dry": "npm publish --dry-run",
+    "version:patch": "npm version patch",
+    "version:minor": "npm version minor",
+    "version:major": "npm version major"
+  },
+  "dependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/markdown-it": "^14.1.2",
+    "@vueuse/core": "^10.0.0",
+    "js-yaml": "^4.1.0",
+    "lucide-vue-next": "^0.511.0",
+    "markdown-it": "^13.0.0",
+    "markdown-it-anchor": "^8.6.0",
+    "markdown-it-prism": "^2.3.0",
+    "prismjs": "^1.29.0",
+    "vue": "^3.3.0",
+    "vue-router": "^4.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.4.0",
+    "@vue/tsconfig": "^0.4.0",
+    "sass": "^1.66.0",
+    "typescript": "^5.0.0",
+    "vite": "^4.4.0",
+    "vite-plugin-dts": "^4.5.4",
+    "vue-tsc": "^1.8.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.3.0"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "documentation",
+    "docs",
+    "markdown",
+    "yaml",
+    "ui-library",
+    "component-library",
+    "static-site-generator",
+    "docs-generator",
+    "开箱即用",
+    "文档生成器",
+    "机器学习",
+    "技术文档"
+  ],
+  "author": "Vue Docs UI Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vue-docs-ui/vue-docs-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vue-docs-ui/vue-docs-ui/issues"
+  },
+  "homepage": "https://github.com/vue-docs-ui/vue-docs-ui#readme"
+}

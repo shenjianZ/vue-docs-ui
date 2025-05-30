@@ -1,0 +1,79 @@
+# 网站基本配置
+site:
+  title: "机器学习教程"
+  description: "深入理解机器学习的原理与应用"
+  logo: "🤖"
+  author: "AI Team"
+  
+# 顶部导航配置
+navbar:
+  items:
+    - title: "首页"
+      link: "/"
+      active: true
+    - title: "文档"
+      link: "/docs"
+    - title: "关于"
+      link: "/about"
+
+# 侧边栏导航配置
+sidebar:
+  sections:
+    - title: "第一章 机器学习基础"
+      path: "/chapter1"
+      children:
+        - title: "1.1 人工智能的两只手和四条腿"
+          path: "/chapter1/ai-basics"
+        - title: "1.2 机器学习是什么"
+          path: "/chapter1/what-is-ml"
+        - title: "1.3 时代造就机器学习"
+          path: "/chapter1/era-of-ml"
+        - title: "1.4 泛化能力：机器学习的核心"
+          path: "/chapter1/generalization"
+        - title: "1.5 归纳偏置：机器学习的灵魂"
+          path: "/chapter1/inductive-bias"
+        - title: "1.6 机器学习的限制"
+          path: "/chapter1/limitations"
+        - title: "1.7 本章小结"
+          path: "/chapter1/summary"
+          
+    - title: "第二章 数学基础"
+      path: "/chapter2"
+      children:
+        - title: "2.1 线性代数基础"
+          path: "/chapter2/linear-algebra"
+        - title: "2.2 概率论基础"
+          path: "/chapter2/probability"
+        - title: "2.3 微积分基础"
+          path: "/chapter2/calculus"
+
+# 主题配置
+theme:
+  colors:
+    primary: "#3b82f6"
+    secondary: "#64748b"
+    accent: "#06b6d4"
+    background: "#ffffff"
+    surface: "#f8fafc"
+    text: "#1e293b"
+    textSecondary: "#64748b"
+    border: "#e2e8f0"
+    
+  fonts:
+    primary: "Inter, -apple-system, BlinkMacSystemFont, sans-serif"
+    mono: "JetBrains Mono, Consolas, monospace"
+
+# 目录配置
+toc:
+  # 右侧目录默认显示的最大层级 (1-6)
+  # 1: 只显示 h1
+  # 2: 显示 h1, h2
+  # 3: 显示 h1, h2, h3
+  # 以此类推
+  maxLevel: 2
+  
+  # 是否启用目录
+  enabled: true
+  
+  # 目录标题
+  title: "目录" 

@@ -1,0 +1,16 @@
+example/node_modules/
+node_modules/
+# 开发文件
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+dist/
+# 临时文件
+*.tmp
+*.temp
+
+# 保留以下文档文件：
+USAGE.md
+QUICK-START.md 

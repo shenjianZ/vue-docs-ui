@@ -1,0 +1,19 @@
+{
+  "name": "vue-docs-ui-example",
+  "version": "1.0.0",
+  "description": "Vue Docs UI 使用示例",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.3.0",
+    "vue-router": "^4.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.4.0",
+    "vite": "^4.4.0",
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,32 @@
+# 源代码
+src/
+example/
+public/
+
+# 开发文件
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+# 测试文件
+tests/
+coverage/
+
+# 构建工具配置
+vite.config.js
+tsconfig.json
+vite.config.lib.js
+index.html
+
+# 依赖
+node_modules/
+
+# 临时文件
+*.tmp
+*.temp
+
+# 保留以下文档文件：
+# README.md
+# USAGE.md
+# QUICK-START.md 
