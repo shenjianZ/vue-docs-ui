@@ -31,8 +31,8 @@
   --error-color: #ef4444;
   --info-color: #3b82f6;
   
-  // 尺寸
-  --header-height: 64px;
+  // 尺寸（与App.vue保持一致）
+  --header-height: 60px;
   --sidebar-width: 280px;
   --toc-width: 240px;
   --border-radius: 6px;
@@ -68,24 +68,31 @@
 }
 
 // 基础重置
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 html {
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
+  -moz-tab-size: 4;
   tab-size: 4;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
+  padding: 0;
   font-family: var(--font-family);
   font-feature-settings: normal;
   font-variation-settings: normal;
   background-color: var(--bg-color);
   color: var(--text-color);
   transition: background-color 0.2s, color 0.2s;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 // 滚动条样式
@@ -109,9 +116,11 @@ body {
 
 // 通用类
 .container {
-  max-width: 1200px;
+  max-width: 100%;
+  width: 100%;
   margin: 0 auto;
   padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 .btn {
@@ -519,4 +528,17 @@ code, pre {
   a {
     text-decoration: underline;
   }
+}
+
+// 防止溢出的工具类
+.prevent-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.break-words {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 } 

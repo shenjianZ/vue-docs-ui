@@ -1,15 +1,17 @@
 {
   "name": "vue-docs-ui",
   "version": "1.0.0",
-  "description": "一个基于Vue 3的现代化文档网站组件库，支持YAML配置和Markdown渲染，开箱即用的文档解决方案",
+  "description": "A modern documentation UI component library built with Vue 3. Create beautiful documentation websites with YAML configuration and Markdown rendering - ready to use out of the box.",
   "main": "dist/vue-docs-ui.umd.js",
   "module": "dist/vue-docs-ui.es.js",
   "types": "dist/types/index.d.ts",
   "files": [
     "dist",
     "README.md",
-    "USAGE.md",
-    "QUICK-START.md"
+    "README-zh.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "package.json"
   ],
   "exports": {
     ".": {
@@ -68,19 +70,22 @@
     "component-library",
     "static-site-generator",
     "docs-generator",
-    "开箱即用",
-    "文档生成器",
-    "机器学习",
-    "技术文档"
+    "documentation-framework",
+    "static-site",
+    "technical-documentation",
+    "out-of-the-box",
+    "zero-config",
+    "responsive-design",
+    "typescript"
   ],
   "author": "Vue Docs UI Team",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vue-docs-ui/vue-docs-ui.git"
+    "url": "https://github.com/your-org/vue-docs-ui.git"
   },
   "bugs": {
-    "url": "https://github.com/vue-docs-ui/vue-docs-ui/issues"
+    "url": "https://github.com/your-org/vue-docs-ui/issues"
   },
-  "homepage": "https://github.com/vue-docs-ui/vue-docs-ui#readme"
+  "homepage": "https://github.com/your-org/vue-docs-ui#readme"
 }

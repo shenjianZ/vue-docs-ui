@@ -4,7 +4,15 @@
       <!-- Logo区域 -->
       <div class="nav-brand">
         <router-link to="/" class="brand-link">
-          <span class="brand-logo">{{ siteInfo.logo }}</span>
+          <div class="brand-logo">
+            <img 
+              v-if="isImageLogo(siteInfo.logo)" 
+              :src="siteInfo.logo" 
+              :alt="siteInfo.title"
+              class="logo-image"
+            />
+            <span v-else class="logo-text">{{ siteInfo.logo }}</span>
+          </div>
           <span class="brand-title">{{ siteInfo.title }}</span>
         </router-link>
       </div>
@@ -37,7 +45,11 @@
         <button class="search-btn" @click="toggleSearch">
           <Search :size="20" />
         </button>
-        <button class="theme-toggle" @click="toggleTheme">
+        <button 
+          v-if="showThemeToggle"
+          class="theme-toggle" 
+          @click="toggleTheme"
+        >
           <Sun v-if="isDark" :size="20" />
           <Moon v-else :size="20" />
         </button>
@@ -50,7 +62,7 @@
 </template>
 
 <script>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { Search, Sun, Moon, Menu, Github } from 'lucide-vue-next'
 import { loadConfig, getSiteInfo, getNavbarConfig } from '../utils/config'
@@ -64,6 +76,12 @@ export default {
     Menu,
     Github,
   },
+  props: {
+    config: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   emits: ['toggle-sidebar'],
   setup(props, { emit }) {
     const router = useRouter()
@@ -71,11 +89,33 @@ export default {
     const navItems = ref([])
     const isDark = ref(false)
     
+    // 从props或inject获取配置
+    const docsConfig = props.config || inject('docsConfig', {})
+    
+    // 计算是否显示主题切换按钮
+    const showThemeToggle = computed(() => {
+      return docsConfig.theme?.allowToggle !== false
+    })
+    
+    // 判断logo是否为图片链接
+    const isImageLogo = (logo) => {
+      if (!logo || typeof logo !== 'string') {
+        return false
+      }
+      // 检查是否为图片URL（http/https开头或相对路径且包含图片扩展名）
+      const isUrl = logo.match(/^(https?:\/\/|\/|\.\/|\.\.\/)/i)
+      const hasImageExt = logo.match(/\.(jpg|jpeg|png|gif|svg|webp|ico)(\?.*)?$/i)
+      return !!isUrl && !!hasImageExt
+    }
+    
     // 初始化
     onMounted(async () => {
       await loadConfig()
       Object.assign(siteInfo, getSiteInfo())
       navItems.value = getNavbarConfig().items || []
+      
+      // 初始化主题状态
+      isDark.value = document.documentElement.classList.contains('dark')
     })
     
     // 处理导航点击
@@ -94,6 +134,9 @@ export default {
     const toggleTheme = () => {
       isDark.value = !isDark.value
       document.documentElement.classList.toggle('dark', isDark.value)
+      
+      // 保存用户偏好
+      localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
     }
     
     // 切换移动菜单
@@ -105,6 +148,8 @@ export default {
       siteInfo,
       navItems,
       isDark,
+      showThemeToggle,
+      isImageLogo,
       handleNavClick,
       toggleSearch,
       toggleTheme,
@@ -156,8 +201,21 @@ export default {
     font-weight: 600;
     
     .brand-logo {
-      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
       margin-right: 0.5rem;
+      
+      .logo-image {
+        height: 32px;
+        width: auto;
+        max-width: 40px;
+        object-fit: contain;
+        border-radius: 4px;
+      }
+      
+      .logo-text {
+        font-size: 1.5rem;
+      }
     }
     
     .brand-title {

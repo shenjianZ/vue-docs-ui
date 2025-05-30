@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import type { DocsConfig, SidebarSection, TocItem } from '../types'
+import type { DocsConfig, SidebarSection, TocItem, NavItem } from '../types'
 
 // 简单的YAML解析器 - 专门处理我们的配置格式
 function parseSimpleYaml(yamlText: string): any {
@@ -65,7 +65,8 @@ function parseSimpleYaml(yamlText: string): any {
             obj[key] = {}
           }
         } else {
-          obj[key] = parseValue(value)
+          const parsedValue = parseValue(value)
+          obj[key] = parsedValue
           i++
         }
       } else {
@@ -100,13 +101,14 @@ function parseSimpleYaml(yamlText: string): any {
         const itemValue = trimmed.substring(2).trim()
         
         if (itemValue.includes(':')) {
-          // 数组项是对象
+          // 数组项是对象，从第一个键值对开始
           const colonIndex = itemValue.indexOf(':')
           const key = itemValue.substring(0, colonIndex).trim()
           const value = itemValue.substring(colonIndex + 1).trim()
           
           const itemObj: any = {}
           
+          // 处理第一个键值对
           if (!value) {
             // 空值，检查下一行
             i++
@@ -125,6 +127,57 @@ function parseSimpleYaml(yamlText: string): any {
           } else {
             itemObj[key] = parseValue(value)
             i++
+          }
+          
+          // 继续读取同一数组项的其他键值对
+          while (i < lines.length) {
+            const nextLine = lines[i]
+            const nextTrimmed = nextLine.trim()
+            
+            if (!nextTrimmed || nextTrimmed.startsWith('#')) {
+              i++
+              continue
+            }
+            
+            const nextIndent = nextLine.length - nextLine.trimStart().length
+            
+            // 如果缩进小于数组项缩进，说明这个数组项结束了
+            if (nextIndent <= startIndent) {
+              break
+            }
+            
+            // 如果是同级的键值对
+            if (nextIndent === startIndent + 2 && nextTrimmed.includes(':')) {
+              const nextColonIndex = nextTrimmed.indexOf(':')
+              const nextKey = nextTrimmed.substring(0, nextColonIndex).trim()
+              const nextValue = nextTrimmed.substring(nextColonIndex + 1).trim()
+              
+              if (!nextValue) {
+                // 空值，检查下一行
+                i++
+                if (i < lines.length) {
+                  const followLine = lines[i]
+                  const followIndent = followLine.length - followLine.trimStart().length
+                  
+                  if (followIndent > nextIndent) {
+                    if (followLine.trim().startsWith('- ')) {
+                      itemObj[nextKey] = parseArray(followIndent)
+                    } else {
+                      itemObj[nextKey] = parseObject(followIndent)
+                    }
+                  } else {
+                    itemObj[nextKey] = {}
+                  }
+                } else {
+                  itemObj[nextKey] = {}
+                }
+              } else {
+                itemObj[nextKey] = parseValue(nextValue)
+                i++
+              }
+            } else {
+              break
+            }
           }
           
           arr.push(itemObj)
@@ -195,35 +248,100 @@ export async function loadConfig(configPath: string): Promise<DocsConfig> {
   try {
     const response = await fetch(configPath)
     const yamlText = await response.text()
-    return parseSimpleYaml(yamlText) as DocsConfig
+    const config = parseSimpleYaml(yamlText) as DocsConfig
+    return config
   } catch (error) {
     console.error('Failed to load config:', error)
     throw error
   }
 }
 
+// 标准化NavItem - 兼容两种格式
+function normalizeNavItem(item: any): NavItem {
+  return {
+    text: item.text || item.title,
+    title: item.title || item.text,
+    link: item.link || item.path,
+    path: item.path || item.link,
+    children: item.children?.map(normalizeNavItem),
+    external: item.external,
+    active: item.active
+  }
+}
+
+// 标准化SidebarSection - 兼容两种格式
+function normalizeSidebarSection(section: any): SidebarSection {
+  const normalized = {
+    text: section.text || section.title,
+    title: section.title || section.text,
+    link: section.link || section.path,
+    path: section.path || section.link,
+    children: section.children?.map(normalizeSidebarSection),
+    collapsed: section.collapsed
+  }
+  return normalized
+}
+
+// 获取标准化的侧边栏配置
+export function getNormalizedSidebar(config: DocsConfig): SidebarSection[] {
+  let sidebar: any[] = []
+  
+  if (config.sidebar) {
+    if (Array.isArray(config.sidebar)) {
+      sidebar = config.sidebar
+    } else if (config.sidebar.sections) {
+      sidebar = config.sidebar.sections
+    }
+  }
+  
+  return sidebar.map(normalizeSidebarSection)
+}
+
+// 获取标准化的导航配置
+export function getNormalizedNavbar(config: DocsConfig): NavItem[] {
+  let nav: any[] = []
+  
+  if (config.navbar?.items) {
+    nav = config.navbar.items
+  } else if (config.nav) {
+    nav = config.nav
+  }
+  
+  return nav.map(normalizeNavItem)
+}
+
 // 从侧边栏配置生成路由
-export function generateRoutesFromSidebar(sidebar: SidebarSection[], articleComponent?: any): RouteRecordRaw[] {
+export function generateRoutesFromSidebar(sidebar: SidebarSection[] | { sections: SidebarSection[] } | any, articleComponent?: any): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = []
+  
+  // 获取标准化的sidebar数组
+  let normalizedSidebar: SidebarSection[] = []
+  if (Array.isArray(sidebar)) {
+    normalizedSidebar = sidebar.map(normalizeSidebarSection)
+  } else if (sidebar?.sections) {
+    normalizedSidebar = sidebar.sections.map(normalizeSidebarSection)
+  }
 
   function processSection(section: SidebarSection, parentPath = '') {
-    if (section.link) {
-      routes.push({
-        path: section.link,
-        name: section.text,
+    const link = section.link || section.path
+    if (link) {
+      const route = {
+        path: link,
+        name: section.text || section.title,
         component: articleComponent || (() => Promise.resolve({ template: '<div>Page not found</div>' })),
         props: { 
-          title: section.text
+          title: section.text || section.title
         }
-      })
+      }
+      routes.push(route)
     }
 
     if (section.children) {
-      section.children.forEach(child => processSection(child, section.link || parentPath))
+      section.children.forEach(child => processSection(child, link || parentPath))
     }
   }
 
-  sidebar.forEach(section => processSection(section))
+  normalizedSidebar.forEach(section => processSection(section))
   return routes
 }
 

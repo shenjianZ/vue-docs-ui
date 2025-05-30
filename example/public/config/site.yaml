@@ -2,7 +2,12 @@
 site:
   title: "动手学学习"
   description: "机器学习入门与实战教程"
-  logo: "🤖"
+  # logo支持以下格式：
+  # 1. emoji: "🤖"
+  # 2. 图片URL: "https://example.com/logo.png"
+  # 3. 本地图片: "/images/logo.png"
+  # 4. 相对路径: "./assets/logo.svg"
+  logo: "/images/logo.png"
   author: "AI Team"
   
 # 顶部导航配置
@@ -45,6 +50,16 @@ sidebar:
 
 # 主题配置
 theme:
+  # 默认主题模式: 'light' | 'dark' | 'auto'
+  # light: 强制使用浅色模式
+  # dark: 强制使用深色模式
+  # auto: 根据系统偏好设置自动切换（默认）
+  defaultMode: "light"
+  
+  # 是否允许用户切换主题（显示主题切换按钮）
+  allowToggle: true
+  
+  # 颜色配置
   colors:
     primary: "#3b82f6"
     secondary: "#64748b"

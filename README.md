@@ -1,29 +1,40 @@
 # Vue Docs UI
 
-一个真正开箱即用的Vue 3文档网站组件库，支持YAML配置和Markdown渲染。
+[![npm version](https://badge.fury.io/js/vue-docs-ui.svg)](https://badge.fury.io/js/vue-docs-ui)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Vue.js](https://img.shields.io/badge/Vue.js-3.3+-4FC08D.svg)](https://vuejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
-## 特性
+**[中文文档](./README-zh.md) | [Live Demo](https://vue-docs-ui.github.io/vue-docs-ui)**
 
-- 🎨 现代化的UI设计，支持深色/浅色主题
-- 📝 支持Markdown文档渲染，自动生成目录
-- ⚙️ YAML配置驱动，易于定制
-- 📱 响应式设计，完美支持移动端
-- 🔍 内置搜索功能和导航
-- 🚀 基于Vue 3 + TypeScript，类型安全
-- 📦 真正开箱即用，无需创建任何组件
-- 🎯 专为文档网站优化
+A modern, feature-rich documentation UI component library built with Vue 3. Create beautiful documentation websites with YAML configuration and Markdown rendering - ready to use out of the box.
 
-## 安装
+## ✨ Features
+
+- 🎨 **Modern Design**: Grid-based responsive layout with beautiful UI
+- 📱 **Mobile Optimized**: Perfect mobile experience with touch-friendly navigation  
+- 🌙 **Theme Support**: Built-in light/dark themes with full customization
+- 📖 **Markdown Rendering**: Complete Markdown support with syntax highlighting
+- 🔍 **Auto Navigation**: Automatic table of contents generation
+- ⚙️ **YAML Configuration**: Configuration-driven approach with YAML files
+- 🚀 **Zero Setup**: Get started with just 3 lines of code
+- 📊 **TypeScript**: Full TypeScript support with type definitions
+- 🎯 **Vue 3**: Built for Vue 3 with Composition API
+- 🔧 **Highly Customizable**: Flexible theming and component customization
+
+## 🚀 Quick Start
+
+### Installation
 
 ```bash
 npm install vue-docs-ui
-# 或
+# or
 yarn add vue-docs-ui
+# or
+pnpm add vue-docs-ui
 ```
 
-## 开箱即用 - 3步搭建文档网站
-
-### 1. 创建main.ts（仅需3行代码）
+### Basic Usage (3 lines of code!)
 
 ```typescript
 // main.ts
@@ -33,45 +44,58 @@ import 'vue-docs-ui/dist/style.css'
 createDocsApp()
 ```
 
-### 2. 创建配置文件
+### Configuration File
 
-创建 `public/config/site.yaml`:
+Create `public/config/site.yaml`:
 
 ```yaml
+# Basic site configuration
 site:
-  title: "我的文档网站"
-  description: "使用Vue Docs UI构建的文档网站"
-  logo: "📚"
+  title: "My Documentation"
+  description: "Built with Vue Docs UI"
+  logo: "📚"  # Supports emoji, images, or URLs
+  author: "Your Name"
 
-nav:
-  - text: "首页"
-    link: "/"
-  - text: "指南"
-    link: "/guide"
-  - text: "GitHub"
-    link: "https://github.com/yourrepo"
-    external: true
+# Navigation
+navbar:
+  items:
+    - title: "Home"
+      link: "/"
+    - title: "Guide"
+      link: "/guide"
+    - title: "GitHub"
+      link: "https://github.com/your-repo"
+      external: true
 
+# Sidebar
 sidebar:
-  - text: "开始使用"
-    children:
-      - text: "快速开始"
-        link: "/guide/getting-started"
-      - text: "安装配置"
-        link: "/guide/installation"
-  - text: "高级用法"
-    children:
-      - text: "自定义主题"
-        link: "/advanced/themes"
+  sections:
+    - title: "Getting Started"
+      path: "/guide"
+      children:
+        - title: "Quick Start"
+          path: "/guide/quick-start"
+        - title: "Configuration"
+          path: "/guide/configuration"
 
+# Theme
 theme:
-  primaryColor: "#3b82f6"
-  accentColor: "#10b981"
+  defaultMode: "light"  # "light" | "dark" | "auto"
+  allowToggle: true
+  colors:
+    primary: "#3b82f6"
+    secondary: "#64748b"
+
+# Table of Contents
+toc:
+  maxLevel: 2
+  enabled: true
+  title: "Contents"
 ```
 
-### 3. 添加Markdown文档
+### Add Markdown Content
 
-在 `public/docs/` 目录下创建对应的Markdown文件：
+Create your markdown files in `public/docs/`:
 
 ```
 public/
@@ -79,240 +103,307 @@ public/
 │   └── site.yaml
 └── docs/
     ├── guide/
-    │   ├── getting-started.md
-    │   └── installation.md
+    │   ├── quick-start.md
+    │   └── configuration.md
     └── advanced/
-        └── themes.md
+        └── customization.md
 ```
 
-**就这样！** 🎉 您的文档网站已经准备就绪！
+That's it! 🎉 Run `npm run dev` and your documentation site is ready.
 
-运行 `npm run dev` 即可看到效果。
+## 📦 What's Included
 
-## 自定义选项
+- **DocsLayout**: Main layout component with responsive design
+- **HeaderNav**: Top navigation with theme toggle and mobile menu
+- **SidebarNav**: Collapsible sidebar navigation
+- **TableOfContents**: Auto-generated table of contents
+- **MarkdownRenderer**: Markdown rendering with syntax highlighting
+- **DefaultHome**: Beautiful homepage component
+- **DefaultArticle**: Article page with breadcrumbs and navigation
 
-如果需要自定义，可以传递选项：
+## 🎯 Logo Configuration
+
+Vue Docs UI supports multiple logo formats:
+
+```yaml
+site:
+  # Emoji (simplest)
+  logo: "🤖"
+  
+  # Local image
+  logo: "/images/logo.png"
+  
+  # Online image
+  logo: "https://example.com/logo.svg"
+  
+  # Relative path
+  logo: "./assets/logo.svg"
+```
+
+**Logo Requirements:**
+- **Recommended formats**: PNG, SVG (vector graphics preferred)
+- **Recommended size**: 32-64px height, auto width
+- **File size**: < 100KB recommended
+- **Supported formats**: PNG, SVG, JPG, GIF, WebP, ICO
+
+## 🎨 Theme Configuration
+
+### Basic Theme Setup
+
+```yaml
+theme:
+  # Default theme mode
+  defaultMode: "light"  # "light" | "dark" | "auto"
+  
+  # Allow users to toggle theme
+  allowToggle: true
+  
+  # Custom colors
+  colors:
+    primary: "#3b82f6"
+    secondary: "#64748b"
+    accent: "#06b6d4"
+    background: "#ffffff"
+    surface: "#f8fafc"
+    text: "#1e293b"
+    border: "#e2e8f0"
+    
+  # Typography
+  fonts:
+    primary: "Inter, -apple-system, BlinkMacSystemFont, sans-serif"
+    mono: "JetBrains Mono, Consolas, monospace"
+```
+
+### Theme Mode Options
+
+- **`"light"`**: Force light theme, ignore system preference
+- **`"dark"`**: Force dark theme, ignore system preference  
+- **`"auto"`**: Follow system preference (default)
+
+### Theme Toggle Control
+
+- **`allowToggle: true`**: Show theme toggle button (default)
+- **`allowToggle: false`**: Hide theme toggle, use configured default only
+
+## 🔧 Advanced Usage
+
+### Custom Components
 
 ```typescript
-// main.ts
 import createDocsApp from 'vue-docs-ui'
 import 'vue-docs-ui/dist/style.css'
+import MyCustomHome from './MyCustomHome.vue'
+import MyCustomArticle from './MyCustomArticle.vue'
 
 createDocsApp({
-  configPath: '/config/site.yaml',  // 配置文件路径，默认 '/config/site.yaml'
-  el: '#app',                       // 挂载元素，默认 '#app'
-  customComponents: {               // 自定义组件（可选）
-    home: () => import('./views/MyHome.vue'),
-    article: () => import('./views/MyArticle.vue')
+  configPath: '/config/site.yaml',
+  el: '#app',
+  customComponents: {
+    home: MyCustomHome,
+    article: MyCustomArticle
   }
 })
 ```
 
-## 完整项目结构
+### Component Library Mode
+
+```typescript
+import { createApp } from 'vue'
+import { DocsLayout, loadConfig } from 'vue-docs-ui'
+import 'vue-docs-ui/dist/style.css'
+
+const config = await loadConfig('/config/site.yaml')
+const app = createApp(DocsLayout, { config })
+app.mount('#app')
+```
+
+### Available Components
+
+```typescript
+import {
+  DocsLayout,
+  HeaderNav,
+  SidebarNav,
+  TableOfContents,
+  MarkdownRenderer,
+  DefaultHome,
+  DefaultArticle,
+  createDocsApp,
+  loadConfig
+} from 'vue-docs-ui'
+```
+
+## 📱 Responsive Design
+
+Vue Docs UI is fully responsive:
+
+- **Desktop**: Full sidebar + content + table of contents
+- **Tablet**: Sidebar + content (TOC hidden)
+- **Mobile**: Overlay sidebar with smooth animations
+
+## 🔍 Markdown Features
+
+- ✅ Standard Markdown syntax
+- ✅ Syntax highlighting for code blocks
+- ✅ Auto-generated table of contents
+- ✅ Responsive tables and images
+- ✅ Custom heading anchors
+- ✅ Math equations support (coming soon)
+
+## 📁 Project Structure
 
 ```
 my-docs-project/
 ├── public/
 │   ├── config/
-│   │   └── site.yaml        # 站点配置
-│   └── docs/               # Markdown文档
+│   │   └── site.yaml        # Site configuration
+│   └── docs/               # Markdown content
 │       ├── guide/
-│       │   ├── getting-started.md
-│       │   └── installation.md
+│       │   ├── quick-start.md
+│       │   └── configuration.md
 │       └── advanced/
-│           └── themes.md
+│           └── customization.md
 ├── src/
-│   └── main.ts             # 仅需几行代码
-├── index.html              # 基础HTML文件
+│   └── main.ts             # Just 3 lines of code
+├── index.html
 ├── package.json
 └── vite.config.js
 ```
 
-## Markdown文档示例
+## 🚦 Migration from Other Tools
 
-```markdown
-<!-- public/docs/guide/getting-started.md -->
-# 快速开始
-
-欢迎使用Vue Docs UI！这是一个开箱即用的文档网站构建工具。
-
-## 安装
-
-\`\`\`bash
-npm install vue-docs-ui
-\`\`\`
-
-## 基本用法
-
-只需要3行代码就可以创建一个完整的文档网站：
-
-\`\`\`typescript
-import createDocsApp from 'vue-docs-ui'
-import 'vue-docs-ui/dist/style.css'
-
-createDocsApp()
-\`\`\`
-
-## 功能特性
-
-- ✅ 自动生成导航
-- ✅ Markdown渲染
-- ✅ 目录生成
-- ✅ 响应式设计
-- ✅ 主题切换
-
-就这么简单！
-```
-
-## 高级用法
-
-### 自定义主题
+### From VitePress
 
 ```yaml
-# site.yaml
-theme:
-  primaryColor: "#3b82f6"
-  accentColor: "#10b981"
-  backgroundColor: "#ffffff"
-  textColor: "#1f2937"
-  fontFamily: "Inter, sans-serif"
+# VitePress config.js equivalent in YAML
+site:
+  title: "My Docs"
+  description: "Documentation site"
+
+navbar:
+  items:
+    - title: "Guide"
+      link: "/guide/"
+
+sidebar:
+  sections:
+    - title: "Getting Started"
+      children:
+        - title: "Introduction"
+          path: "/guide/introduction"
 ```
 
-### 自定义首页
+### From Docusaurus
 
-```typescript
-// main.ts
-import createDocsApp from 'vue-docs-ui'
-import 'vue-docs-ui/dist/style.css'
-import MyHome from './MyHome.vue'
+Vue Docs UI provides a simpler, Vue-focused alternative with zero configuration complexity.
 
-createDocsApp({
-  customComponents: {
-    home: MyHome
-  }
-})
-```
+## 🎯 Comparison
 
-### 使用组件库模式（高级用户）
+| Feature | Vue Docs UI | VitePress | Docusaurus |
+|---------|-------------|-----------|------------|
+| Setup Complexity | ⭐ 3 lines | ⭐⭐ Config needed | ⭐⭐⭐ Complex setup |
+| Vue 3 Support | ✅ Native | ✅ Yes | ❌ React only |
+| Zero Config | ✅ Out of box | ⭐⭐ Needs config | ⭐⭐ Needs config |
+| TypeScript | ✅ Full support | ✅ Yes | ✅ Yes |
+| Customization | ⭐⭐⭐ Highly flexible | ⭐⭐ Medium | ⭐⭐⭐ Highly flexible |
+| Performance | ⭐⭐⭐ Excellent | ⭐⭐⭐ Excellent | ⭐⭐ Good |
 
-```typescript
-// 如果需要更多控制，可以使用组件库模式
-import { createApp } from 'vue'
-import { createDocsUI, loadConfig } from 'vue-docs-ui'
-import 'vue-docs-ui/dist/style.css'
-import App from './App.vue'
+## 🛠️ Development
 
-async function initApp() {
-  const config = await loadConfig('/config/site.yaml')
-  const app = createApp(App)
-  app.use(createDocsUI({ config }))
-  app.mount('#app')
-}
+### Prerequisites
 
-initApp()
-```
+- Node.js 16+
+- npm/yarn/pnpm
 
-## 与其他工具的比较
-
-| 特性 | Vue Docs UI | VitePress | Docusaurus |
-|------|-------------|-----------|------------|
-| 设置复杂度 | ⭐ 3行代码 | ⭐⭐ 需要配置 | ⭐⭐⭐ 复杂配置 |
-| Vue 3 支持 | ✅ 原生支持 | ✅ 支持 | ❌ React only |
-| 开箱即用 | ✅ 完全即用 | ⭐⭐ 需要配置 | ⭐⭐ 需要配置 |
-| TypeScript | ✅ 完整支持 | ✅ 支持 | ✅ 支持 |
-| 自定义程度 | ⭐⭐⭐ 高度自定义 | ⭐⭐ 中等 | ⭐⭐⭐ 高度自定义 |
-
-## 示例项目
-
-查看 `example/` 目录下的完整示例项目，展示了如何构建一个机器学习文档网站。
-
-## 常见问题
-
-### Q: 是否需要创建Vue组件？
-A: 不需要！开箱即用，只需要配置YAML和编写Markdown。
-
-### Q: 如何添加新页面？
-A: 只需要：1) 在sidebar配置中添加链接 2) 创建对应的.md文件
-
-### Q: 支持哪些Markdown功能？
-A: 支持标准Markdown + 代码高亮 + 数学公式 + 表格 + 目录生成
-
-### Q: 如何部署？
-A: 运行 `npm run build` 后将dist目录部署到任意静态服务器
-
-## 快速开始模板
-
-创建新项目最快的方式：
+### Development Setup
 
 ```bash
-# 1. 创建新目录
-mkdir my-docs && cd my-docs
-
-# 2. 初始化项目
-npm init -y
-npm install vue-docs-ui
-
-# 3. 创建必要文件
-mkdir -p public/config public/docs/guide src
-
-# 4. 创建main.ts
-echo "import createDocsApp from 'vue-docs-ui'
-import 'vue-docs-ui/dist/style.css'
-createDocsApp()" > src/main.ts
-
-# 5. 创建配置文件
-# （复制上面的YAML配置到 public/config/site.yaml）
-
-# 6. 创建首页文档
-echo "# 欢迎
-这是我的文档网站！" > public/docs/guide/getting-started.md
-
-# 7. 启动开发服务器
-npm run dev
-```
-
-## 开发
-
-```bash
-# 克隆项目
-git clone https://github.com/yourrepo/vue-docs-ui.git
-
-# 安装依赖
+# Clone the repository
+git clone https://github.com/vue-docs-ui/vue-docs-ui.git
 cd vue-docs-ui
+
+# Install dependencies
 npm install
 
-# 开发模式
+# Start development server
 npm run dev
 
-# 构建库
+# Build library
 npm run build:lib
 
-# 类型检查
-npm run type-check
+# Run example
+cd example && npm run dev
 ```
 
-## 浏览器支持
+### Build Commands
+
+```bash
+npm run build:lib     # Build library for production
+npm run build         # Build example site
+npm run type-check    # TypeScript type checking
+npm run preview       # Preview built site
+```
+
+## 📦 Publishing to NPM
+
+This package is ready for NPM publication:
+
+```bash
+# Dry run (test without publishing)
+npm run publish:dry
+
+# Version bump
+npm run version:patch  # 1.0.0 → 1.0.1
+npm run version:minor  # 1.0.0 → 1.1.0
+npm run version:major  # 1.0.0 → 2.0.0
+
+# Publish to NPM
+npm publish
+```
+
+The package includes:
+- ✅ TypeScript declarations
+- ✅ ES and UMD builds
+- ✅ CSS bundle
+- ✅ Proper exports configuration
+- ✅ Tree-shaking support
+
+## 🌐 Browser Support
 
 - Chrome >= 87
-- Firefox >= 78
+- Firefox >= 78  
 - Safari >= 14
 - Edge >= 88
 
-## 许可证
+## 📝 License
 
-MIT License
+MIT License - see [LICENSE](LICENSE) file for details.
 
-## 贡献
+## 🤝 Contributing
 
-欢迎提交Issue和Pull Request！
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-## 更新日志
+### Development Workflow
 
-### v1.0.0
-- 🎉 首次发布
-- ✨ 真正开箱即用，3行代码搭建网站
-- ✨ 支持YAML配置驱动
-- ✨ Markdown渲染和目录生成
-- ✨ 响应式设计和主题切换
-- ✨ TypeScript支持
-- ✨ 内置美观的默认组件 
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📞 Support
+
+- 📖 [Documentation](https://vue-docs-ui.github.io/vue-docs-ui)
+- 🐛 [Issue Tracker](https://github.com/vue-docs-ui/vue-docs-ui/issues)
+- 💬 [Discussions](https://github.com/vue-docs-ui/vue-docs-ui/discussions)
+
+## 🙏 Acknowledgments
+
+- Built with [Vue.js 3](https://vuejs.org/)
+- Powered by [Vite](https://vitejs.dev/)
+- Icons by [Lucide](https://lucide.dev/)
+- Inspired by modern documentation tools
+
+---
+
+**Made with ❤️ by the Vue Docs UI Team** 

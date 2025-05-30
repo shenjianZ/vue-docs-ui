@@ -1,39 +1,79 @@
 export interface NavItem {
-  text: string
+  text?: string
+  title?: string  // 新格式
   link?: string
+  path?: string   // 新格式
   children?: NavItem[]
   external?: boolean
+  active?: boolean
 }
 
 export interface SidebarSection {
-  text: string
-  link?: string
+  text?: string
+  title?: string  // 新格式
+  link?: string 
+  path?: string   // 新格式
   children?: SidebarSection[]
   collapsed?: boolean
 }
 
 export interface ThemeConfig {
+  // 默认主题模式
+  defaultMode?: 'light' | 'dark' | 'auto'
+  
+  // 是否允许用户切换主题
+  allowToggle?: boolean
+  
+  // 兼容旧格式
   primaryColor?: string
   accentColor?: string
   backgroundColor?: string
   textColor?: string
   fontFamily?: string
   borderRadius?: string
+  
+  // 新格式支持
+  colors?: {
+    primary?: string
+    secondary?: string
+    accent?: string
+    background?: string
+    surface?: string
+    text?: string
+    textSecondary?: string
+    border?: string
+  }
+  fonts?: {
+    primary?: string
+    mono?: string
+  }
 }
 
+// 支持两种配置格式
 export interface DocsConfig {
   site: {
     title: string
     description?: string
     logo?: string
     favicon?: string
+    author?: string
   }
-  nav: NavItem[]
-  sidebar: SidebarSection[]
+  
+  // 旧格式
+  nav?: NavItem[]
+  sidebar?: SidebarSection[] | { sections: SidebarSection[] }
+  
+  // 新格式
+  navbar?: {
+    items: NavItem[]
+  }
+  
   theme?: ThemeConfig
   toc?: {
-    depth?: number  // 目录深度，默认2
-    enabled?: boolean  // 是否启用，默认true
+    depth?: number      // 旧格式
+    maxLevel?: number   // 新格式
+    enabled?: boolean
+    title?: string      // 新格式
   }
   footer?: {
     text?: string

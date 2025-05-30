@@ -66,6 +66,7 @@ import { ref, computed, onMounted, watch, inject } from 'vue'
 import { useRoute } from 'vue-router'
 import MarkdownRenderer from '../components/MarkdownRenderer.vue'
 import type { DocsConfig, SidebarSection } from '../types'
+import { getNormalizedSidebar } from '../utils'
 
 interface Props {
   config?: DocsConfig
@@ -117,7 +118,7 @@ const pageNavigation = computed(() => {
     })
   }
   
-  collectPages(config.sidebar)
+  collectPages(getNormalizedSidebar(config))
   
   const currentIndex = allPages.findIndex(page => page.link === route.path)
   

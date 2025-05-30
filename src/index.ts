@@ -12,7 +12,7 @@ import TableOfContents from './components/TableOfContents.vue'
 import MarkdownRenderer from './components/MarkdownRenderer.vue'
 
 // 导入工具函数
-import { loadConfig, generateRoutesFromSidebar } from './utils/index'
+import { loadConfig, generateRoutesFromSidebar, getNormalizedSidebar, getNormalizedNavbar } from './utils/index'
 
 // 导入样式
 import './styles/main.scss'
@@ -34,7 +34,9 @@ export {
 // 导出工具函数
 export {
   loadConfig,
-  generateRoutesFromSidebar
+  generateRoutesFromSidebar,
+  getNormalizedSidebar,
+  getNormalizedNavbar
 }
 
 // 简化的应用创建函数 - 开箱即用
@@ -53,6 +55,15 @@ export async function createDocsApp(options: {
   } = options
 
   try {
+    // 检查目标元素是否存在
+    const targetElement = document.querySelector(el)
+    if (!targetElement) {
+      throw new Error(`目标元素 "${el}" 不存在，请确保DOM已加载完成`)
+    }
+
+    // 清空目标元素，避免重复挂载
+    targetElement.innerHTML = ''
+
     // 加载配置
     console.log('Loading config from:', configPath)
     const config = await loadConfig(configPath)
@@ -102,36 +113,40 @@ export async function createDocsApp(options: {
 
     // 挂载应用
     console.log('Mounting app to:', el)
-    app.mount(el)
+    const mountedApp = app.mount(el)
 
-    return { app, router, config }
+    return { app, router, config, mountedApp }
   } catch (error) {
     console.error('创建文档应用失败:', error)
     
     const errorMessage = error instanceof Error ? error.message : '未知错误'
     const errorStack = error instanceof Error ? error.stack : String(error)
     
-    // 显示错误信息
-    const errorApp = createApp({
-      render() {
-        return h('div', {
-          style: {
-            padding: '2rem',
-            textAlign: 'center',
-            color: '#ef4444'
-          }
-        }, [
-          h('h2', '❌ 加载失败'),
-          h('p', errorMessage),
-          h('details', [
-            h('summary', '详细信息'),
-            h('pre', { style: { textAlign: 'left', fontSize: '12px' } }, errorStack)
+    // 检查目标元素是否存在
+    const targetElement = document.querySelector(el)
+    if (targetElement) {
+      // 显示错误信息
+      const errorApp = createApp({
+        render() {
+          return h('div', {
+            style: {
+              padding: '2rem',
+              textAlign: 'center',
+              color: '#ef4444'
+            }
+          }, [
+            h('h2', '❌ 加载失败'),
+            h('p', errorMessage),
+            h('details', [
+              h('summary', '详细信息'),
+              h('pre', { style: { textAlign: 'left', fontSize: '12px' } }, errorStack)
+            ])
           ])
-        ])
-      }
-    })
-    
-    errorApp.mount(el)
+        }
+      })
+      
+      errorApp.mount(el)
+    }
     throw error
   }
 }

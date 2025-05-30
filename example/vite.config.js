@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      // 使用包含编译器的Vue版本
+      // 使用包含编译器的Vue版本以支持运行时模板编译
       'vue': 'vue/dist/vue.esm-bundler.js'
     }
   },

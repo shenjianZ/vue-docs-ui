@@ -3,7 +3,15 @@
     <div class="hero">
       <div class="hero-content">
         <h1 class="hero-title">
-          <span class="hero-logo">{{ config?.site?.logo }}</span>
+          <div class="hero-logo">
+            <img 
+              v-if="isImageLogo(config?.site?.logo)" 
+              :src="config?.site?.logo" 
+              :alt="config?.site?.title"
+              class="logo-image"
+            />
+            <span v-else class="logo-text">{{ config?.site?.logo }}</span>
+          </div>
           {{ config?.site?.title }}
         </h1>
         <p class="hero-description">{{ config?.site?.description }}</p>
@@ -14,22 +22,22 @@
       <h2>目录</h2>
       <div class="chapter-grid">
         <div 
-          v-for="chapter in config?.sidebar" 
-          :key="chapter.text"
+          v-for="chapter in normalizedSidebar" 
+          :key="chapter.text || chapter.title"
           class="chapter-card"
           @click="navigateToChapter(chapter)"
         >
-          <h3>{{ chapter.text }}</h3>
+          <h3>{{ chapter.text || chapter.title }}</h3>
           <div class="chapter-sections">
             <div 
               v-for="section in chapter.children?.slice(0, 3)" 
-              :key="section.text"
+              :key="section.text || section.title"
               class="section-item"
             >
-              <router-link v-if="section.link" :to="section.link" class="section-link">
-                {{ section.text }}
+              <router-link v-if="section.link || section.path" :to="(section.link || section.path)!" class="section-link">
+                {{ section.text || section.title }}
               </router-link>
-              <span v-else class="section-text">{{ section.text }}</span>
+              <span v-else class="section-text">{{ section.text || section.title }}</span>
             </div>
             <div v-if="chapter.children && chapter.children.length > 3" class="more-sections">
               +{{ chapter.children.length - 3 }} 更多...
@@ -42,9 +50,10 @@
 </template>
 
 <script setup lang="ts">
-import { inject } from 'vue'
+import { inject, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { DocsConfig } from '../types'
+import { getNormalizedSidebar } from '../utils'
 
 interface Props {
   config?: DocsConfig
@@ -54,13 +63,34 @@ const props = defineProps<Props>()
 const injectedConfig = inject<DocsConfig>('docsConfig')
 const config = props.config || injectedConfig
 
+// 使用标准化的sidebar
+const normalizedSidebar = computed(() => {
+  return config ? getNormalizedSidebar(config) : []
+})
+
+// 判断logo是否为图片链接
+const isImageLogo = (logo: string | undefined) => {
+  if (!logo || typeof logo !== 'string') {
+    return false
+  }
+  // 检查是否为图片URL（http/https开头或相对路径且包含图片扩展名）
+  const isUrl = logo.match(/^(https?:\/\/|\/|\.\/|\.\.\/)/i)
+  const hasImageExt = logo.match(/\.(jpg|jpeg|png|gif|svg|webp|ico)(\?.*)?$/i)
+  return !!isUrl && !!hasImageExt
+}
+
 const router = useRouter()
 
 function navigateToChapter(chapter: any) {
+  const link = chapter.link || chapter.path
   if (chapter.children && chapter.children.length > 0) {
-    router.push(chapter.children[0].link)
-  } else if (chapter.link) {
-    router.push(chapter.link)
+    const firstChild = chapter.children[0]
+    const firstChildLink = firstChild.link || firstChild.path
+    if (firstChildLink) {
+      router.push(firstChildLink)
+    }
+  } else if (link) {
+    router.push(link)
   }
 }
 </script>
@@ -86,17 +116,42 @@ function navigateToChapter(chapter: any) {
     font-weight: 700;
     margin-bottom: 1rem;
     color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
     
     .hero-logo {
-      font-size: 3.5rem;
-      margin-right: 1rem;
+      display: flex;
+      align-items: center;
+      
+      .logo-image {
+        height: 64px;
+        width: auto;
+        max-width: 80px;
+        object-fit: contain;
+        border-radius: 8px;
+      }
+      
+      .logo-text {
+        font-size: 3.5rem;
+      }
     }
     
     @media (max-width: 768px) {
       font-size: 2rem;
+      flex-direction: column;
+      gap: 0.5rem;
       
       .hero-logo {
-        font-size: 2.5rem;
+        .logo-image {
+          height: 48px;
+          max-width: 60px;
+        }
+        
+        .logo-text {
+          font-size: 2.5rem;
+        }
       }
     }
   }
