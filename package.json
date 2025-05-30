@@ -82,10 +82,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/vue-docs-ui.git"
+    "url": "https://github.com/shenjianZ/vue-docs-ui.git"
   },
   "bugs": {
-    "url": "https://github.com/your-org/vue-docs-ui/issues"
+    "url": "https://github.com/shenjianZ/vue-docs-ui/issues"
   },
-  "homepage": "https://github.com/your-org/vue-docs-ui#readme"
+  "homepage": "https://github.com/shenjianZ/vue-docs-ui#readme"
 }
