@@ -1,6 +1,6 @@
 {
   "name": "vue-docs-ui",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A modern documentation UI component library built with Vue 3. Create beautiful documentation websites with YAML configuration and Markdown rendering - ready to use out of the box.",
   "main": "dist/vue-docs-ui.umd.js",
   "module": "dist/vue-docs-ui.es.js",
