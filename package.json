@@ -19,7 +19,7 @@
       "import": "./dist/vue-docs-ui.es.js",
       "require": "./dist/vue-docs-ui.umd.js"
     },
-    "./dist/style.css": "./dist/style.css"
+    "./dist/vue-docs-ui.css": "./dist/vue-docs-ui.css"
   },
   "scripts": {
     "dev": "vite",
