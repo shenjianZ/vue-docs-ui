@@ -1,0 +1,39 @@
+name: 构建测试
+
+# 在 Pull Request 时触发构建测试
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 类型检查
+        run: npm run type-check
+
+      - name: 构建项目
+        run: npm run build
+
+      - name: 预览构建结果
+        run: npm run preview &
+        
+      - name: 等待服务启动
+        run: sleep 5
+        
+      - name: 检查构建结果
+        run: |
+          curl -f http://localhost:4173/ || exit 1
+          echo "✅ 构建成功，预览服务正常运行" 

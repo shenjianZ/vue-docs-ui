@@ -393,6 +393,17 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
+📖 **Documentation in multiple languages:**
+- 🇺🇸 [English Contributing Guide](CONTRIBUTING.md)
+- 🇨🇳 [中文贡献指南](CONTRIBUTING-zh.md)
+
+### Quick Contributing
+
+- 🐛 [Report bugs](https://github.com/shenjianZ/vue-docs-ui/issues/new?template=bug_report.md)
+- 💡 [Request features](https://github.com/shenjianZ/vue-docs-ui/issues/new?template=feature_request.md)
+- 📖 [Improve documentation](https://github.com/shenjianZ/vue-docs-ui/edit/master/README.md)
+- 💬 [Join discussions](https://github.com/shenjianZ/vue-docs-ui/discussions)
+
 ### Development Workflow
 
 1. Fork the repository
@@ -404,8 +415,18 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 ## 📞 Support
 
 - 📖 [Documentation](https://vue-docs-ui.github.io/vue-docs-ui)
-- 🐛 [Issue Tracker](https://github.com/vue-docs-ui/vue-docs-ui/issues)
-- 💬 [Discussions](https://github.com/vue-docs-ui/vue-docs-ui/discussions)
+- 🐛 [Issue Tracker](https://github.com/shenjianZ/vue-docs-ui/issues)
+- 💬 [Discussions](https://github.com/shenjianZ/vue-docs-ui/discussions)
+- 📧 [Email Support](mailto:contact@vuedocsui.com)
+
+## 📊 Stats
+
+![npm](https://img.shields.io/npm/v/vue-docs-ui?style=flat-square&logo=npm)
+![downloads](https://img.shields.io/npm/dt/vue-docs-ui?style=flat-square&logo=npm)
+![bundle size](https://img.shields.io/bundlephobia/minzip/vue-docs-ui?style=flat-square&logo=webpack)
+![GitHub stars](https://img.shields.io/github/stars/shenjianZ/vue-docs-ui?style=flat-square&logo=github)
+![GitHub forks](https://img.shields.io/github/forks/shenjianZ/vue-docs-ui?style=flat-square&logo=github)
+![GitHub issues](https://img.shields.io/github/issues/shenjianZ/vue-docs-ui?style=flat-square&logo=github)
 
 ## 🙏 Acknowledgments
 
