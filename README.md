@@ -24,7 +24,17 @@ A modern, feature-rich documentation UI component library built with Vue 3. Crea
 
 ## 🚀 Quick Start
 
-### Installation
+### Option 1: Use Scaffolding Tool (Recommended)
+
+```bash
+# Create a new documentation project with one command
+npm create vue-docs-ui my-docs
+cd my-docs
+npm install
+npm run dev
+```
+
+### Option 2: Manual Installation
 
 ```bash
 npm install vue-docs-ui

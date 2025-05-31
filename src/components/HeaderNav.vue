@@ -27,7 +27,7 @@
           >
             <a 
               :href="item.external ? item.link : undefined"
-              :class="['nav-link', { active: item.active }]"
+              :class="['nav-link', { active: isActiveNavItem(item) }]"
               :target="item.external ? '_blank' : undefined"
               @click="!item.external && handleNavClick(item)"
             >
@@ -63,7 +63,7 @@
 
 <script>
 import { ref, reactive, onMounted, computed, inject } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { Search, Sun, Moon, Menu, Github } from 'lucide-vue-next'
 import { loadConfig, getSiteInfo, getNavbarConfig } from '../utils/config'
 
@@ -85,6 +85,7 @@ export default {
   emits: ['toggle-sidebar'],
   setup(props, { emit }) {
     const router = useRouter()
+    const route = useRoute()
     const siteInfo = reactive({})
     const navItems = ref([])
     const isDark = ref(false)
@@ -144,6 +145,100 @@ export default {
       emit('toggle-sidebar')
     }
     
+    // 判断导航项是否为活动项
+    const isActiveNavItem = (item) => {
+      if (!item.link || item.external) return false
+      const currentPath = route.path
+      
+      // 添加调试信息
+      console.log('检查导航项:', {
+        title: item.title,
+        link: item.link,
+        currentPath: currentPath,
+        external: item.external
+      })
+      
+      // 1. 精确匹配
+      if (currentPath === item.link) {
+        console.log('精确匹配成功:', item.title)
+        return true
+      }
+      
+      // 2. 首页特殊处理
+      if (item.link === '/' && currentPath === '/') {
+        console.log('首页匹配成功')
+        return true
+      }
+      
+      // 3. 对于非首页导航项，检查是否需要通过sidebar配置进行匹配
+      if (item.link !== '/' && docsConfig.sidebar) {
+        const isInSection = checkIfPathBelongsToNavItem(currentPath, item, docsConfig.sidebar)
+        if (isInSection) {
+          console.log('通过sidebar配置匹配成功:', item.title)
+          return true
+        }
+      }
+      
+      // 4. 简单的前缀匹配（作为fallback）
+      if (item.link !== '/' && currentPath.startsWith(item.link)) {
+        console.log('前缀匹配成功:', item.title)
+        return true
+      }
+      
+      return false
+    }
+    
+    // 检查当前路径是否属于某个导航项的范畴
+    const checkIfPathBelongsToNavItem = (currentPath, navItem, sidebarConfig) => {
+      if (!sidebarConfig.sections) return false
+      
+      // 遍历sidebar的每个section，看当前路径是否属于与navItem相关的section
+      for (const section of sidebarConfig.sections) {
+        // 检查section的路径是否与navItem匹配
+        if (isNavItemRelatedToSection(navItem, section)) {
+          // 检查当前路径是否在这个section中
+          if (isPathInSection(currentPath, section)) {
+            return true
+          }
+        }
+      }
+      return false
+    }
+    
+    // 判断导航项是否与sidebar section相关
+    const isNavItemRelatedToSection = (navItem, section) => {
+      // 如果导航项的链接以section的路径开头，或者section的路径以导航项链接开头
+      if (section.path) {
+        return navItem.link.startsWith(section.path) || section.path.startsWith(navItem.link)
+      }
+      
+      // 检查section的children中是否有与导航项匹配的路径
+      if (section.children) {
+        return section.children.some(child => 
+          child.path === navItem.link || navItem.link.startsWith(child.path)
+        )
+      }
+      
+      return false
+    }
+    
+    // 检查路径是否在section中
+    const isPathInSection = (currentPath, section) => {
+      // 检查section本身的路径
+      if (section.path && currentPath.startsWith(section.path)) {
+        return true
+      }
+      
+      // 检查section的children
+      if (section.children) {
+        return section.children.some(child => 
+          child.path && (currentPath === child.path || currentPath.startsWith(child.path + '/'))
+        )
+      }
+      
+      return false
+    }
+    
     return {
       siteInfo,
       navItems,
@@ -154,6 +249,10 @@ export default {
       toggleSearch,
       toggleTheme,
       toggleMobileMenu,
+      isActiveNavItem,
+      checkIfPathBelongsToNavItem,
+      isNavItemRelatedToSection,
+      isPathInSection,
     }
   }
 }
@@ -256,6 +355,7 @@ export default {
     font-weight: 500;
     border-radius: 6px;
     transition: all 0.2s ease;
+    position: relative;
     
     &:hover {
       color: var(--primary-color);
@@ -265,6 +365,19 @@ export default {
     &.active {
       color: var(--primary-color);
       background-color: var(--bg-color-hover);
+      
+      // 添加底部横线效果
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        height: 2px;
+        background-color: var(--primary-color);
+        border-radius: 1px;
+      }
     }
     
     .nav-icon {

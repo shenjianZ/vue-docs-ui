@@ -83,14 +83,16 @@ const router = useRouter()
 
 function navigateToChapter(chapter: any) {
   const link = chapter.link || chapter.path
-  if (chapter.children && chapter.children.length > 0) {
+  // 直接跳转到章节本身，不自动跳转到第一个子项
+  if (link) {
+    router.push(link)
+  } else if (chapter.children && chapter.children.length > 0) {
+    // 只有当章节本身没有链接时，才跳转到第一个子项
     const firstChild = chapter.children[0]
     const firstChildLink = firstChild.link || firstChild.path
     if (firstChildLink) {
       router.push(firstChildLink)
     }
-  } else if (link) {
-    router.push(link)
   }
 }
 </script>
