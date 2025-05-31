@@ -5,8 +5,9 @@
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.3+-4FC08D.svg)](https://vuejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
-**[English](./README.md) | [在线演示](https://vue-docs-ui.github.io/vue-docs-ui)**
+**[English](./README.md)**
 
+<!-- **[English](./README.md) | [在线演示](https://vue-docs-ui.github.io/vue-docs-ui)** -->
 一个基于Vue 3的现代化文档网站组件库。通过YAML配置和Markdown渲染创建精美的文档网站 - 开箱即用。
 
 ## ✨ 特性

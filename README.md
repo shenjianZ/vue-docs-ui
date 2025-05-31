@@ -5,8 +5,8 @@
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.3+-4FC08D.svg)](https://vuejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
-**[中文文档](./README-zh.md) | [Live Demo](https://vue-docs-ui.github.io/vue-docs-ui)**
-
+**[中文文档](./README-zh.md)**
+<!-- **[中文文档](./README-zh.md) | [Live Demo](https://vue-docs-ui.github.io/vue-docs-ui)** -->
 A modern, feature-rich documentation UI component library built with Vue 3. Create beautiful documentation websites with YAML configuration and Markdown rendering - ready to use out of the box.
 
 ## ✨ Features
