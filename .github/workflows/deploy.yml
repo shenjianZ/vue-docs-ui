@@ -31,15 +31,14 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-      - name: 安装依赖
-        run: npm ci
-
       - name: 创建文档站点
-        run: |
-          npm create vue-docs-ui docs-site -- --yes
-          cd docs-site
-          npm install
-          npm run build
+        run: npm create vue-docs-ui
+        
+      - name: 安装依赖
+        run: npm install
+        
+      - name: 构建项目
+        run: npm run build
         env:
           GITHUB_PAGES: true
 
@@ -49,7 +48,7 @@ jobs:
       - name: 上传构建产物
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs-site/dist
+          path: dist
 
   # 部署任务
   deploy:
