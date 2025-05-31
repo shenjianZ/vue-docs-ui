@@ -47,7 +47,8 @@ https://<你的用户名>.github.io/vue-docs-ui
    - 检出代码
    - 设置 Node.js 18
    - 安装依赖 (`npm ci`)
-   - 运行构建 (`npm run build`)，设置 `GITHUB_PAGES=true` 环境变量
+   - 创建文档站点 (`npm create vue-docs-ui`)
+   - 构建文档站点 (`npm run build`)，设置 `GITHUB_PAGES=true` 环境变量
    - 上传构建产物到 GitHub Pages
 
 2. **部署（Deploy）**：
