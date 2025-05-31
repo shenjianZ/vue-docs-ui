@@ -19,16 +19,18 @@ jobs:
           cache: 'npm'
 
       - name: 创建文档站点
-        run: npm create vue-docs-ui
+        run: npm create vue-docs-ui docs-site
         
-      - name: 安装依赖
-        run: npm install
-        
-      - name: 构建项目进行测试
-        run: npm run build
+      - name: 安装依赖并构建
+        run: |
+          cd docs-site
+          npm install
+          npm run build
         
       - name: 预览构建结果
-        run: npm run preview &
+        run: |
+          cd docs-site
+          npm run preview &
         
       - name: 等待服务启动
         run: sleep 5
@@ -37,4 +39,4 @@ jobs:
         run: |
           curl -f http://localhost:4173/ || exit 1
           echo "✅ 构建成功，预览服务正常运行"
-          ls -la dist/ 
+          ls -la docs-site/dist/ 

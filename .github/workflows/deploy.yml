@@ -32,13 +32,13 @@ jobs:
           cache: 'npm'
 
       - name: 创建文档站点
-        run: npm create vue-docs-ui
+        run: npm create vue-docs-ui docs-site
         
-      - name: 安装依赖
-        run: npm install
-        
-      - name: 构建项目
-        run: npm run build
+      - name: 安装依赖并构建
+        run: |
+          cd docs-site
+          npm install
+          npm run build
         env:
           GITHUB_PAGES: true
 
@@ -48,7 +48,7 @@ jobs:
       - name: 上传构建产物
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: docs-site/dist
 
   # 部署任务
   deploy:
