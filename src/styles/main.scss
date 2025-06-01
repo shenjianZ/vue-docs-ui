@@ -49,22 +49,300 @@
   --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-// 深色主题
+// ==============================================
+// 主题系统 - 多主题支持
+// ==============================================
+
+// 1. 默认主题的深色模式
 .dark {
-  --bg-color: #0f172a;
-  --bg-color-secondary: #1e293b;
-  --bg-color-hover: rgba(59, 130, 246, 0.1);
+  // 背景颜色 - 更深沉的黑色系，贴近Vue官网
+  --bg-color: #1a1a1a;           // 主背景：深黑色
+  --bg-color-secondary: #242424;  // 次级背景：稍亮的深灰
+  --bg-color-hover: rgba(59, 130, 246, 0.08);
   
-  --text-color: #f1f5f9;
-  --text-color-light: #cbd5e1;
-  --text-color-muted: #94a3b8;
-  --heading-color: #f8fafc;
+  // 文本颜色 - 保持高对比度
+  --text-color: #e2e2e3;
+  --text-color-light: #a8a8a9;
+  --text-color-muted: #8e8e90;
+  --heading-color: #ffffff;
   
-  --border-color: #334155;
-  --border-color-light: #475569;
+  // 边框颜色 - 微妙的分割线
+  --border-color: #3c3c3c;
+  --border-color-light: #484848;
   
-  --code-bg-color: #1e293b;
-  --code-text-color: #e2e8f0;
+  // 代码块 - 更深的代码背景
+  --code-bg-color: #161618;
+  --code-text-color: #e6e6e6;
+}
+
+// 2. Vue主题 (绿色系)
+.theme-vue {
+  // 颜色系统 - Vue官网风格
+  --primary-color: #41b883;       // Vue绿色
+  --primary-color-dark: #369970;
+  --accent-color: #35495e;        // Vue深蓝色
+  --accent-color-dark: #2c3e50;
+  
+  // 背景颜色
+  --bg-color: #ffffff;
+  --bg-color-secondary: #f9f9f9;
+  --bg-color-hover: rgba(65, 184, 131, 0.06);
+  
+  // 文本颜色
+  --text-color: #2c3e50;
+  --text-color-light: #7f8c8d;
+  --text-color-muted: #95a5a6;
+  --heading-color: #2c3e50;
+  
+  // 边框和分割线
+  --border-color: #e4e7ed;
+  --border-color-light: #ebeef5;
+  
+  // 代码块
+  --code-bg-color: #f8f8f8;
+  --code-text-color: #476582;
+  
+  // 状态颜色
+  --success-color: #41b883;
+  --warning-color: #f1c40f;
+  --error-color: #e74c3c;
+  --info-color: #3498db;
+  
+  &.dark {
+    --bg-color: #0d1117;
+    --bg-color-secondary: #161b22;
+    --bg-color-hover: rgba(65, 184, 131, 0.1);
+    
+    --text-color: #e6edf3;
+    --text-color-light: #7d8590;
+    --text-color-muted: #656d76;
+    --heading-color: #f0f6fc;
+    
+    --border-color: #30363d;
+    --border-color-light: #21262d;
+    
+    --code-bg-color: #0d1117;
+    --code-text-color: #e6edf3;
+    
+    --primary-color: #42d392;
+    --primary-color-dark: #369970;
+  }
+}
+
+// 3. GitHub主题 (黑白灰系)
+.theme-github {
+  // 颜色系统 - GitHub风格
+  --primary-color: #0969da;       // GitHub蓝色
+  --primary-color-dark: #0550ae;
+  --accent-color: #6f42c1;        // GitHub紫色
+  --accent-color-dark: #5a32a3;
+  
+  // 背景颜色
+  --bg-color: #ffffff;
+  --bg-color-secondary: #f6f8fa;
+  --bg-color-hover: rgba(9, 105, 218, 0.05);
+  
+  // 文本颜色
+  --text-color: #24292f;
+  --text-color-light: #656d76;
+  --text-color-muted: #8b949e;
+  --heading-color: #1f2328;
+  
+  // 边框和分割线
+  --border-color: #d0d7de;
+  --border-color-light: #e5e8ec;
+  
+  // 代码块
+  --code-bg-color: #f6f8fa;
+  --code-text-color: #24292f;
+  
+  // 状态颜色
+  --success-color: #1a7f37;
+  --warning-color: #9a6700;
+  --error-color: #d1242f;
+  --info-color: #0969da;
+  
+  &.dark {
+    --bg-color: #0d1117;
+    --bg-color-secondary: #161b22;
+    --bg-color-hover: rgba(9, 105, 218, 0.1);
+    
+    --text-color: #e6edf3;
+    --text-color-light: #7d8590;
+    --text-color-muted: #656d76;
+    --heading-color: #f0f6fc;
+    
+    --border-color: #30363d;
+    --border-color-light: #21262d;
+    
+    --code-bg-color: #0d1117;
+    --code-text-color: #e6edf3;
+    
+    --primary-color: #58a6ff;
+    --primary-color-dark: #1f6feb;
+  }
+}
+
+// 4. Purple主题 (紫色系)
+.theme-purple {
+  // 颜色系统 - 紫色风格
+  --primary-color: #8b5cf6;       // 紫色
+  --primary-color-dark: #7c3aed;
+  --accent-color: #ec4899;        // 粉色
+  --accent-color-dark: #db2777;
+  
+  // 背景颜色
+  --bg-color: #ffffff;
+  --bg-color-secondary: #faf5ff;
+  --bg-color-hover: rgba(139, 92, 246, 0.05);
+  
+  // 文本颜色
+  --text-color: #374151;
+  --text-color-light: #6b7280;
+  --text-color-muted: #9ca3af;
+  --heading-color: #1f2937;
+  
+  // 边框和分割线
+  --border-color: #e5e7eb;
+  --border-color-light: #f3f4f6;
+  
+  // 代码块
+  --code-bg-color: #f9fafb;
+  --code-text-color: #374151;
+  
+  // 状态颜色
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --info-color: #8b5cf6;
+  
+  &.dark {
+    --bg-color: #0f0f23;
+    --bg-color-secondary: #1a1a2e;
+    --bg-color-hover: rgba(139, 92, 246, 0.1);
+    
+    --text-color: #e2e8f0;
+    --text-color-light: #a1a1aa;
+    --text-color-muted: #71717a;
+    --heading-color: #f1f5f9;
+    
+    --border-color: #374151;
+    --border-color-light: #4b5563;
+    
+    --code-bg-color: #0f0f23;
+    --code-text-color: #e2e8f0;
+    
+    --primary-color: #a78bfa;
+    --primary-color-dark: #8b5cf6;
+  }
+}
+
+// 5. Orange主题 (橙色系)
+.theme-orange {
+  // 颜色系统 - 橙色风格
+  --primary-color: #ea580c;       // 橙色
+  --primary-color-dark: #c2410c;
+  --accent-color: #dc2626;        // 红色
+  --accent-color-dark: #b91c1c;
+  
+  // 背景颜色
+  --bg-color: #ffffff;
+  --bg-color-secondary: #fff7ed;
+  --bg-color-hover: rgba(234, 88, 12, 0.05);
+  
+  // 文本颜色
+  --text-color: #292524;
+  --text-color-light: #78716c;
+  --text-color-muted: #a8a29e;
+  --heading-color: #1c1917;
+  
+  // 边框和分割线
+  --border-color: #e7e5e4;
+  --border-color-light: #f5f5f4;
+  
+  // 代码块
+  --code-bg-color: #fafaf9;
+  --code-text-color: #292524;
+  
+  // 状态颜色
+  --success-color: #16a34a;
+  --warning-color: #ea580c;
+  --error-color: #dc2626;
+  --info-color: #0284c7;
+  
+  &.dark {
+    --bg-color: #1c1917;
+    --bg-color-secondary: #292524;
+    --bg-color-hover: rgba(234, 88, 12, 0.1);
+    
+    --text-color: #fafaf9;
+    --text-color-light: #a8a29e;
+    --text-color-muted: #78716c;
+    --heading-color: #ffffff;
+    
+    --border-color: #44403c;
+    --border-color-light: #57534e;
+    
+    --code-bg-color: #1c1917;
+    --code-text-color: #fafaf9;
+    
+    --primary-color: #fb923c;
+    --primary-color-dark: #ea580c;
+  }
+}
+
+// 6. Emerald主题 (翠绿色系)
+.theme-emerald {
+  // 颜色系统 - 翠绿色风格
+  --primary-color: #059669;       // 翠绿色
+  --primary-color-dark: #047857;
+  --accent-color: #0d9488;        // 青绿色
+  --accent-color-dark: #0f766e;
+  
+  // 背景颜色
+  --bg-color: #ffffff;
+  --bg-color-secondary: #ecfdf5;
+  --bg-color-hover: rgba(5, 150, 105, 0.05);
+  
+  // 文本颜色
+  --text-color: #064e3b;
+  --text-color-light: #065f46;
+  --text-color-muted: #6b7280;
+  --heading-color: #022c22;
+  
+  // 边框和分割线
+  --border-color: #d1fae5;
+  --border-color-light: #ecfdf5;
+  
+  // 代码块
+  --code-bg-color: #f0fdf4;
+  --code-text-color: #064e3b;
+  
+  // 状态颜色
+  --success-color: #059669;
+  --warning-color: #d97706;
+  --error-color: #dc2626;
+  --info-color: #0284c7;
+  
+  &.dark {
+    --bg-color: #022c22;
+    --bg-color-secondary: #064e3b;
+    --bg-color-hover: rgba(5, 150, 105, 0.1);
+    
+    --text-color: #d1fae5;
+    --text-color-light: #86efac;
+    --text-color-muted: #4ade80;
+    --heading-color: #ffffff;
+    
+    --border-color: #065f46;
+    --border-color-light: #047857;
+    
+    --code-bg-color: #022c22;
+    --code-text-color: #d1fae5;
+    
+    --primary-color: #34d399;
+    --primary-color-dark: #10b981;
+  }
 }
 
 // 基础重置

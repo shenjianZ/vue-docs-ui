@@ -12,6 +12,7 @@ import HeaderNav from './components/HeaderNav.vue'
 import SidebarNav from './components/SidebarNav.vue'
 import TableOfContents from './components/TableOfContents.vue'
 import MarkdownRenderer from './components/MarkdownRenderer.vue'
+import ThemeSwitcher from './components/ThemeSwitcher.vue'
 
 // 导入工具函数
 import { loadConfig, generateRoutesFromSidebar, getNormalizedSidebar, getNormalizedNavbar } from './utils/index'
@@ -29,6 +30,7 @@ export {
   SidebarNav,
   TableOfContents,
   MarkdownRenderer,
+  ThemeSwitcher,
   DefaultHome,
   DefaultArticle
 }
@@ -106,6 +108,7 @@ export async function createDocsApp(options: {
     app.component('SidebarNav', SidebarNav)
     app.component('TableOfContents', TableOfContents)
     app.component('MarkdownRenderer', MarkdownRenderer)
+    app.component('ThemeSwitcher', ThemeSwitcher)
 
     // 使用路由
     app.use(router)
@@ -174,6 +177,7 @@ export function createDocsUI(options: DocsUIOptions = {}) {
       app.component('SidebarNav', SidebarNav)
       app.component('TableOfContents', TableOfContents)
       app.component('MarkdownRenderer', MarkdownRenderer)
+      app.component('ThemeSwitcher', ThemeSwitcher)
 
       // 提供配置
       if (options.config) {

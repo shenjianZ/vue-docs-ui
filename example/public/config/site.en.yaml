@@ -49,19 +49,17 @@ sidebar:
 
 # Theme configuration
 theme:
-  colors:
-    primary: "#3b82f6"
-    secondary: "#64748b"
-    accent: "#06b6d4"
-    background: "#ffffff"
-    surface: "#f8fafc"
-    text: "#1e293b"
-    textSecondary: "#64748b"
-    border: "#e2e8f0"
-    
-  fonts:
-    primary: "Inter, -apple-system, BlinkMacSystemFont, sans-serif"
-    mono: "JetBrains Mono, Consolas, monospace"
+  # Theme selection: default | vue | github | purple | orange | emerald
+  theme: "github"
+  
+  # Default mode: light | dark | auto
+  defaultMode: "auto"
+  
+  # Allow users to toggle theme
+  allowToggle: true
+  
+  # Show theme switcher (if false, users cannot manually switch themes)
+  showThemeSwitcher: true
 
 # Table of contents configuration
 toc:

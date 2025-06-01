@@ -49,15 +49,12 @@
           <Bot :size="20" />
         </button>
         <LanguageSwitcher />
-        <button 
-          v-if="showThemeToggle"
-          class="theme-toggle" 
-          @click="toggleTheme"
-          :title="t('common.theme')"
-        >
-          <Sun v-if="isDark" :size="20" />
-          <Moon v-else :size="20" />
-        </button>
+        <ThemeSwitcher 
+          v-if="shouldShowThemeSwitcher"
+          :visible="shouldShowThemeSwitcher"
+          :allowThemeToggle="allowThemeToggle"
+          :allowModeToggle="allowModeToggle"
+        />
         <button class="mobile-menu-btn" @click="toggleMobileMenu" :title="t('common.menu')">
           <Menu :size="24" />
         </button>
@@ -73,6 +70,7 @@ import { useI18n } from 'vue-i18n'
 import { Search, Sun, Moon, Menu, Github, Bot } from 'lucide-vue-next'
 import { loadConfig, getSiteInfo, getNavbarConfig } from '../utils/config'
 import LanguageSwitcher from './LanguageSwitcher.vue'
+import ThemeSwitcher from './ThemeSwitcher.vue'
 
 export default {
   name: 'HeaderNav',
@@ -84,6 +82,7 @@ export default {
     Github,
     Bot,
     LanguageSwitcher,
+    ThemeSwitcher,
   },
   props: {
     config: {
@@ -103,9 +102,24 @@ export default {
     // 从props或inject获取配置
     const docsConfig = props.config || inject('docsConfig', {})
     
-    // 计算是否显示主题切换按钮
-    const showThemeToggle = computed(() => {
-      return docsConfig.theme?.allowToggle !== false
+    // 计算主题切换器相关配置
+    const themeConfig = computed(() => docsConfig.theme || {})
+    
+    const shouldShowThemeSwitcher = computed(() => {
+      // 如果配置中明确设置了不显示，则不显示
+      if (themeConfig.value.showThemeSwitcher === false) return false
+      // 如果配置中设置了不允许切换，则不显示
+      if (themeConfig.value.allowToggle === false) return false
+      // 默认显示
+      return true
+    })
+    
+    const allowThemeToggle = computed(() => {
+      return themeConfig.value.allowToggle !== false
+    })
+    
+    const allowModeToggle = computed(() => {
+      return themeConfig.value.allowToggle !== false
     })
     
     // 判断logo是否为图片链接
@@ -165,14 +179,7 @@ export default {
       emit('toggle-ai')
     }
     
-    // 切换主题
-    const toggleTheme = () => {
-      isDark.value = !isDark.value
-      document.documentElement.classList.toggle('dark', isDark.value)
-      
-      // 保存用户偏好
-      localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
-    }
+    // 旧的主题切换逻辑已由ThemeSwitcher组件处理
     
     // 切换移动菜单
     const toggleMobileMenu = () => {
@@ -277,12 +284,13 @@ export default {
       siteInfo,
       navItems,
       isDark,
-      showThemeToggle,
+      shouldShowThemeSwitcher,
+      allowThemeToggle,
+      allowModeToggle,
       isImageLogo,
       handleNavClick,
       toggleSearch,
       toggleAI,
-      toggleTheme,
       toggleMobileMenu,
       isActiveNavItem,
       checkIfPathBelongsToNavItem,
@@ -451,10 +459,19 @@ export default {
   }
   
   .search-btn,
-  .ai-btn,
-  .theme-toggle {
+  .ai-btn {
     @media (max-width: 640px) {
       display: none;
+    }
+  }
+  
+  // ThemeSwitcher组件的响应式处理
+  .theme-switcher {
+    @media (max-width: 640px) {
+      // 在小屏幕上确保主题切换器仍然可见
+      .theme-button .theme-label {
+        display: none;
+      }
     }
   }
   

@@ -50,37 +50,20 @@ sidebar:
 
 # 主题配置
 theme:
-  # 默认主题模式: 'light' | 'dark' | 'auto'
-  # light: 强制使用浅色模式
-  # dark: 强制使用深色模式
-  # auto: 根据系统偏好设置自动切换（默认）
-  defaultMode: "light"
+  # 主题选择：default | vue | github | purple | orange | emerald
+  theme: "vue"
   
-  # 是否允许用户切换主题（显示主题切换按钮）
+  # 默认模式：light | dark | auto
+  defaultMode: "auto"
+  
+  # 是否允许用户切换主题
   allowToggle: true
   
-  # 颜色配置
-  colors:
-    primary: "#3b82f6"
-    secondary: "#64748b"
-    accent: "#06b6d4"
-    background: "#ffffff"
-    surface: "#f8fafc"
-    text: "#1e293b"
-    textSecondary: "#64748b"
-    border: "#e2e8f0"
-    
-  fonts:
-    primary: "Inter, -apple-system, BlinkMacSystemFont, sans-serif"
-    mono: "JetBrains Mono, Consolas, monospace"
+  # 是否显示主题切换器（如果为false，用户无法手动切换主题）
+  showThemeSwitcher: true
 
 # 目录配置
 toc:
-  # 右侧目录默认显示的最大层级 (1-6)
-  maxLevel: 2
-  
-  # 是否启用目录
   enabled: true
-  
-  # 目录标题
+  maxLevel: 3
   title: "目录" 

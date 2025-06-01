@@ -18,11 +18,17 @@ export interface SidebarSection {
 }
 
 export interface ThemeConfig {
+  // 主题选择
+  theme?: 'default' | 'vue' | 'github' | 'purple' | 'orange' | 'emerald'
+  
   // 默认主题模式
   defaultMode?: 'light' | 'dark' | 'auto'
   
   // 是否允许用户切换主题
   allowToggle?: boolean
+  
+  // 是否显示主题切换器
+  showThemeSwitcher?: boolean
   
   // 兼容旧格式
   primaryColor?: string

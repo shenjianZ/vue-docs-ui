@@ -59,11 +59,19 @@ export async function loadConfig(forceLang = null) {
     }
     
     console.log('✅ 配置文件解析成功:', siteConfig)
+    
+    // 自动应用主题配置
+    applyThemeFromConfig(siteConfig)
+    
     return siteConfig
     
   } catch (error) {
     console.error('❌ 配置加载失败，使用默认配置:', error)
     siteConfig = getDefaultConfig(targetLang)
+    
+    // 自动应用默认主题配置
+    applyThemeFromConfig(siteConfig)
+    
     return siteConfig
   }
 }
@@ -116,6 +124,48 @@ export async function loadAllConfigs() {
 export async function reloadConfig(newLang) {
   resetConfig()
   return await loadConfig(newLang)
+}
+
+// 从配置文件应用主题
+export function applyThemeFromConfig(config) {
+  const themeConfig = config?.theme || {}
+  
+  // 如果配置中没有设置主题，直接返回
+  if (!themeConfig.theme && !themeConfig.defaultMode) {
+    return
+  }
+  
+  const body = document.body
+  
+  // 应用主题
+  if (themeConfig.theme && themeConfig.theme !== 'default') {
+    // 移除所有主题类
+    body.classList.remove('theme-vue', 'theme-github', 'theme-purple', 'theme-orange', 'theme-emerald')
+    // 添加指定主题
+    body.classList.add(`theme-${themeConfig.theme}`)
+    console.log(`✅ 已应用主题: ${themeConfig.theme}`)
+  }
+  
+  // 应用深色模式设置
+  if (themeConfig.defaultMode) {
+    if (themeConfig.defaultMode === 'dark') {
+      body.classList.add('dark')
+      console.log('✅ 已启用深色模式')
+    } else if (themeConfig.defaultMode === 'light') {
+      body.classList.remove('dark')
+      console.log('✅ 已启用浅色模式')
+    } else if (themeConfig.defaultMode === 'auto') {
+      // 检测系统主题偏好
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      if (prefersDark) {
+        body.classList.add('dark')
+        console.log('✅ 已启用深色模式（系统偏好）')
+      } else {
+        body.classList.remove('dark')
+        console.log('✅ 已启用浅色模式（系统偏好）')
+      }
+    }
+  }
 }
 
 // 默认配置

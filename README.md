@@ -13,7 +13,8 @@ A modern, feature-rich documentation UI component library built with Vue 3. Crea
 
 - 🎨 **Modern Design**: Grid-based responsive layout with beautiful UI
 - 📱 **Mobile Optimized**: Perfect mobile experience with touch-friendly navigation  
-- 🌙 **Theme Support**: Built-in light/dark themes with full customization
+- 🌈 **Multi-Theme System**: 6 beautiful preset themes (Default, Vue, GitHub, Purple, Orange, Emerald)
+- 🌙 **Smart Theme Mode**: Light/dark mode with auto system preference detection
 - 📖 **Markdown Rendering**: Complete Markdown support with syntax highlighting
 - 🔍 **Auto Navigation**: Automatic table of contents generation
 - ⚙️ **YAML Configuration**: Configuration-driven approach with YAML files
@@ -88,13 +89,19 @@ sidebar:
         - title: "Configuration"
           path: "/guide/configuration"
 
-# Theme
+# Theme (NEW: Multi-theme support!)
 theme:
-  defaultMode: "light"  # "light" | "dark" | "auto"
+  # Theme selection: default | vue | github | purple | orange | emerald
+  theme: "vue"
+  
+  # Default mode: light | dark | auto
+  defaultMode: "auto"
+  
+  # Allow users to toggle theme
   allowToggle: true
-  colors:
-    primary: "#3b82f6"
-    secondary: "#64748b"
+  
+  # Show theme switcher component
+  showThemeSwitcher: true
 
 # Table of Contents
 toc:
@@ -156,44 +163,86 @@ site:
 - **File size**: < 100KB recommended
 - **Supported formats**: PNG, SVG, JPG, GIF, WebP, ICO
 
-## 🎨 Theme Configuration
+## 🎨 Multi-Theme System (NEW!)
 
-### Basic Theme Setup
+Vue Docs UI now supports **6 beautiful preset themes** with complete configuration control:
+
+### Available Themes
+
+| Theme | Description | Best for |
+|-------|-------------|----------|
+| `default` | Modern blue theme | General documentation |
+| `vue` | Vue.js official green theme | Vue projects |
+| `github` | GitHub-style monochrome | Open source projects |
+| `purple` | Elegant purple theme | Design systems |
+| `orange` | Warm orange theme | Marketing sites |
+| `emerald` | Fresh green theme | Eco-friendly projects |
+
+### Basic Theme Configuration
 
 ```yaml
 theme:
-  # Default theme mode
-  defaultMode: "light"  # "light" | "dark" | "auto"
+  # Select theme: default | vue | github | purple | orange | emerald
+  theme: "vue"
   
-  # Allow users to toggle theme
+  # Default mode: light | dark | auto
+  defaultMode: "auto"
+  
+  # Allow users to toggle theme/mode
   allowToggle: true
   
-  # Custom colors
-  colors:
-    primary: "#3b82f6"
-    secondary: "#64748b"
-    accent: "#06b6d4"
-    background: "#ffffff"
-    surface: "#f8fafc"
-    text: "#1e293b"
-    border: "#e2e8f0"
-    
-  # Typography
-  fonts:
-    primary: "Inter, -apple-system, BlinkMacSystemFont, sans-serif"
-    mono: "JetBrains Mono, Consolas, monospace"
+  # Show theme switcher component
+  showThemeSwitcher: true
 ```
 
 ### Theme Mode Options
 
-- **`"light"`**: Force light theme, ignore system preference
-- **`"dark"`**: Force dark theme, ignore system preference  
-- **`"auto"`**: Follow system preference (default)
+- **`"light"`**: Force light mode
+- **`"dark"`**: Force dark mode  
+- **`"auto"`**: Auto-detect system preference (recommended)
 
-### Theme Toggle Control
+### Theme Control Options
 
-- **`allowToggle: true`**: Show theme toggle button (default)
-- **`allowToggle: false`**: Hide theme toggle, use configured default only
+- **`allowToggle: true`**: Users can switch themes and modes
+- **`allowToggle: false`**: Lock theme configuration
+- **`showThemeSwitcher: true`**: Show theme picker in header
+- **`showThemeSwitcher: false`**: Hide theme picker
+
+### Configuration Priority
+
+1. **User Selection** (localStorage)
+2. **Config File** (site.yaml)
+3. **System Preference** (for auto mode)
+4. **Default Values**
+
+### Example Configurations
+
+**Fixed Theme Mode:**
+```yaml
+theme:
+  theme: "github"
+  defaultMode: "light"
+  allowToggle: false
+  showThemeSwitcher: false
+```
+
+**Full User Control:**
+```yaml
+theme:
+  theme: "default"
+  defaultMode: "auto"
+  allowToggle: true
+  showThemeSwitcher: true
+```
+
+**Brand Specific:**
+```yaml
+theme:
+  theme: "vue"          # Vue theme for Vue projects
+  defaultMode: "auto"
+  allowToggle: true
+  showThemeSwitcher: true
+```
 
 ## 🔧 Advanced Usage
 
