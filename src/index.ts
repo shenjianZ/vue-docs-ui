@@ -1,6 +1,8 @@
 import type { App } from 'vue'
 import { createApp, h } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
+// @ts-ignore
+import { i18n } from './locales/index.js'
 
 // 导入组件
 import DocsLayout from './components/DocsLayout.vue'
@@ -107,6 +109,9 @@ export async function createDocsApp(options: {
 
     // 使用路由
     app.use(router)
+    
+    // 安装i18n
+    app.use(i18n)
 
     // 提供全局配置
     app.provide('docsConfig', config)
@@ -160,6 +165,9 @@ export interface DocsUIOptions {
 export function createDocsUI(options: DocsUIOptions = {}) {
   return {
     install(app: App) {
+      // 安装i18n
+      app.use(i18n)
+      
       // 注册全局组件
       app.component('DocsLayout', DocsLayout)
       app.component('HeaderNav', HeaderNav)

@@ -2,7 +2,9 @@ import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
 import './styles/main.scss'
-import { loadConfig, getSiteInfo } from './utils/config'
+import { loadConfig, getSiteInfo, loadAllConfigs } from './utils/config'
+import { loadAIConfig } from './config/ai'
+import { i18n } from './locales/index.js'
 import './utils/debug'
 
 // 导入页面组件
@@ -37,22 +39,34 @@ const router = createRouter({
 
 // 初始化应用
 async function initApp() {
-  // 加载配置
-  await loadConfig()
-  const siteInfo = getSiteInfo()
-  
-  // 更新页面title
-  if (siteInfo.title) {
-    document.title = siteInfo.title
-    const titleElement = document.getElementById('page-title')
-    if (titleElement) {
-      titleElement.textContent = siteInfo.title
+  try {
+    // 加载所有配置（包括AI配置）
+    await loadAllConfigs()
+    const siteInfo = getSiteInfo()
+    
+    // 更新页面title
+    if (siteInfo.title) {
+      document.title = siteInfo.title
+      const titleElement = document.getElementById('page-title')
+      if (titleElement) {
+        titleElement.textContent = siteInfo.title
+      }
     }
+    
+    const app = createApp(App)
+    app.use(router)
+    app.use(i18n)
+    app.mount('#app')
+    
+    console.log('✅ 应用初始化完成，AI功能已就绪')
+  } catch (error) {
+    console.error('❌ 应用初始化失败:', error)
+    // 即使配置加载失败，也继续启动应用
+    const app = createApp(App)
+    app.use(router)
+    app.use(i18n)
+    app.mount('#app')
   }
-  
-  const app = createApp(App)
-  app.use(router)
-  app.mount('#app')
 }
 
 // 启动应用

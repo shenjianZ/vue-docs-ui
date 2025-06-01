@@ -1,7 +1,7 @@
 <template>
   <aside class="table-of-contents">
     <div class="toc-header">
-      <h3>{{ tocTitle }}</h3>
+      <h3>{{ t('common.toc') }}</h3>
     </div>
     
     <nav class="toc-nav" v-if="hasHeaders">
@@ -45,13 +45,14 @@
     </nav>
     
     <div v-else class="toc-empty">
-      <p>暂无目录</p>
+      <p>{{ t('common.noContent') }}</p>
     </div>
   </aside>
 </template>
 
 <script>
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { getTocConfig } from '../utils/config'
 import { filterTOCByLevel } from '../utils/markdown'
 
@@ -64,6 +65,7 @@ export default {
     }
   },
   setup(props) {
+    const { t } = useI18n()
     const activeAnchor = ref('')
 
     // 使用computed来处理过滤后的headers
@@ -143,7 +145,8 @@ export default {
       scrollToAnchor,
       hasHeaders,
       filteredHeaders,
-      tocTitle
+      tocTitle,
+      t
     }
   }
 }

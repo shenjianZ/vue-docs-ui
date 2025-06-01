@@ -1,16 +1,47 @@
 import yaml from 'js-yaml'
+import { loadAIConfig, getAIConfig } from '../config/ai.js'
 
 // 网站配置缓存
 let siteConfig = null
+let currentLanguage = null
+
+// 重置配置缓存（语言切换时使用）
+export function resetConfig() {
+  siteConfig = null
+  currentLanguage = null
+}
+
+// 获取当前语言
+function getCurrentLanguage() {
+  // 优先从localStorage获取
+  const saved = localStorage.getItem('language')
+  if (saved) {
+    return saved
+  }
+  
+  // 检查浏览器语言
+  const browserLang = navigator.language || navigator.userLanguage
+  return browserLang.startsWith('zh') ? 'zh' : 'en'
+}
 
 // 加载配置文件
-export async function loadConfig() {
+export async function loadConfig(forceLang = null) {
+  const targetLang = forceLang || getCurrentLanguage()
+  
+  // 如果语言改变了，重置缓存
+  if (currentLanguage && currentLanguage !== targetLang) {
+    resetConfig()
+  }
+  
+  currentLanguage = targetLang
+  
   if (siteConfig) {
     return siteConfig
   }
   
   try {
-    const configPath = '/config/site.yaml'
+    // 根据语言选择配置文件
+    const configPath = targetLang === 'en' ? '/config/site.en.yaml' : '/config/site.yaml'
     console.log(`尝试加载配置文件: ${configPath}`)
     
     const response = await fetch(configPath)
@@ -32,7 +63,7 @@ export async function loadConfig() {
     
   } catch (error) {
     console.error('❌ 配置加载失败，使用默认配置:', error)
-    siteConfig = getDefaultConfig()
+    siteConfig = getDefaultConfig(targetLang)
     return siteConfig
   }
 }
@@ -66,29 +97,52 @@ export function getTocConfig() {
   }
 }
 
+// 获取AI配置
+export function getAIConfiguration() {
+  return getAIConfig()
+}
+
+// 加载所有配置（包括AI配置）
+export async function loadAllConfigs() {
+  await loadConfig()
+  await loadAIConfig()
+  return {
+    site: siteConfig,
+    ai: getAIConfig()
+  }
+}
+
+// 重新加载配置（语言切换时使用）
+export async function reloadConfig(newLang) {
+  resetConfig()
+  return await loadConfig(newLang)
+}
+
 // 默认配置
-function getDefaultConfig() {
+function getDefaultConfig(lang = 'zh') {
+  const isEn = lang === 'en'
+  
   return {
     site: {
-      title: "文档网站",
-      description: "基于Vue的文档网站",
+      title: isEn ? "Documentation Site" : "文档网站",
+      description: isEn ? "Vue-based documentation site" : "基于Vue的文档网站",
       logo: "📚",
       author: "Author"
     },
     navbar: {
       items: [
-        { title: "首页", link: "/", active: true }
+        { title: isEn ? "Home" : "首页", link: "/", active: true }
       ]
     },
     sidebar: {
       sections: [
         {
-          title: "第一章 机器学习基础",
+          title: isEn ? "Chapter 1: Machine Learning Basics" : "第一章 机器学习基础",
           path: "/chapter1",
           children: [
-            { title: "1.1 人工智能的两只手和四条腿", path: "/chapter1/ai-basics" },
-            { title: "1.2 机器学习是什么", path: "/chapter1/what-is-ml" },
-            { title: "1.3 时代造就机器学习", path: "/chapter1/era-of-ml" }
+            { title: isEn ? "1.1 The Two Hands and Four Legs of AI" : "1.1 人工智能的两只手和四条腿", path: "/chapter1/ai-basics" },
+            { title: isEn ? "1.2 What is Machine Learning" : "1.2 机器学习是什么", path: "/chapter1/what-is-ml" },
+            { title: isEn ? "1.3 The Era That Created Machine Learning" : "1.3 时代造就机器学习", path: "/chapter1/era-of-ml" }
           ]
         }
       ]
@@ -112,7 +166,7 @@ function getDefaultConfig() {
     toc: {
       maxLevel: 2,
       enabled: true,
-      title: "目录"
+      title: isEn ? "Table of Contents" : "目录"
     }
   }
 }

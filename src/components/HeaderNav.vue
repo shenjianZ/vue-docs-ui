@@ -42,18 +42,23 @@
       
       <!-- 右侧操作区域 -->
       <div class="nav-actions">
-        <button class="search-btn" @click="toggleSearch">
+        <button class="search-btn" @click="toggleSearch" :title="t('common.search')">
           <Search :size="20" />
         </button>
+        <button class="ai-btn" @click="toggleAI" :title="t('ai.assistant')">
+          <Bot :size="20" />
+        </button>
+        <LanguageSwitcher />
         <button 
           v-if="showThemeToggle"
           class="theme-toggle" 
           @click="toggleTheme"
+          :title="t('common.theme')"
         >
           <Sun v-if="isDark" :size="20" />
           <Moon v-else :size="20" />
         </button>
-        <button class="mobile-menu-btn" @click="toggleMobileMenu">
+        <button class="mobile-menu-btn" @click="toggleMobileMenu" :title="t('common.menu')">
           <Menu :size="24" />
         </button>
       </div>
@@ -62,10 +67,12 @@
 </template>
 
 <script>
-import { ref, reactive, onMounted, computed, inject } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, computed, inject } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { Search, Sun, Moon, Menu, Github } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
+import { Search, Sun, Moon, Menu, Github, Bot } from 'lucide-vue-next'
 import { loadConfig, getSiteInfo, getNavbarConfig } from '../utils/config'
+import LanguageSwitcher from './LanguageSwitcher.vue'
 
 export default {
   name: 'HeaderNav',
@@ -75,6 +82,8 @@ export default {
     Moon,
     Menu,
     Github,
+    Bot,
+    LanguageSwitcher,
   },
   props: {
     config: {
@@ -82,10 +91,11 @@ export default {
       default: () => ({})
     }
   },
-  emits: ['toggle-sidebar'],
+  emits: ['toggle-sidebar', 'toggle-ai'],
   setup(props, { emit }) {
     const router = useRouter()
     const route = useRoute()
+    const { t } = useI18n()
     const siteInfo = reactive({})
     const navItems = ref([])
     const isDark = ref(false)
@@ -109,14 +119,32 @@ export default {
       return !!isUrl && !!hasImageExt
     }
     
-    // 初始化
-    onMounted(async () => {
+    // 初始化配置
+    const initConfig = async () => {
       await loadConfig()
       Object.assign(siteInfo, getSiteInfo())
       navItems.value = getNavbarConfig().items || []
+    }
+    
+    // 监听语言切换事件
+    const handleLocaleChange = () => {
+      initConfig()
+    }
+    
+    // 初始化
+    onMounted(async () => {
+      await initConfig()
       
       // 初始化主题状态
       isDark.value = document.documentElement.classList.contains('dark')
+      
+      // 监听语言切换事件
+      window.addEventListener('locale-changed', handleLocaleChange)
+    })
+    
+    // 清理事件监听器
+    onUnmounted(() => {
+      window.removeEventListener('locale-changed', handleLocaleChange)
     })
     
     // 处理导航点击
@@ -129,6 +157,12 @@ export default {
     // 切换搜索
     const toggleSearch = () => {
       console.log('Toggle search')
+    }
+    
+    // 切换AI助手
+    const toggleAI = () => {
+      // 发送事件给父组件处理AI助手
+      emit('toggle-ai')
     }
     
     // 切换主题
@@ -247,12 +281,14 @@ export default {
       isImageLogo,
       handleNavClick,
       toggleSearch,
+      toggleAI,
       toggleTheme,
       toggleMobileMenu,
       isActiveNavItem,
       checkIfPathBelongsToNavItem,
       isNavItemRelatedToSection,
       isPathInSection,
+      t
     }
   }
 }
@@ -415,10 +451,17 @@ export default {
   }
   
   .search-btn,
+  .ai-btn,
   .theme-toggle {
     @media (max-width: 640px) {
       display: none;
     }
+  }
+  
+  // 语言切换器在所有屏幕尺寸都显示
+  .language-switcher {
+    display: flex;
+    align-items: center;
   }
   
   .mobile-menu-btn {

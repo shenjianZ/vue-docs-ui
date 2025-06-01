@@ -22,13 +22,13 @@
       <!-- 加载状态 -->
       <div v-if="loading" class="loading-state">
         <div class="loading-spinner"></div>
-        <p>正在加载文档...</p>
+        <p>{{ t('common.loading') }}</p>
       </div>
       
       <!-- 错误状态 -->
       <div v-else-if="error" class="error-state">
         <p class="error-message">{{ error }}</p>
-        <button @click="loadArticle" class="retry-button">重试</button>
+        <button @click="loadArticle" class="retry-button">{{ t('common.retry') }}</button>
       </div>
       
       <!-- 文章内容 -->
@@ -41,7 +41,7 @@
           :to="prevArticle.path"
           class="nav-button prev"
         >
-          <span class="nav-direction">← 上一节</span>
+          <span class="nav-direction">{{ t('common.prevSection') }}</span>
         </router-link>
         
         <router-link 
@@ -49,7 +49,7 @@
           :to="nextArticle.path"
           class="nav-button next"
         >
-          <span class="nav-direction">下一节 →</span>
+          <span class="nav-direction">{{ t('common.nextSection') }}</span>
         </router-link>
       </nav>
     </article>
@@ -60,8 +60,9 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { loadConfig, getBreadcrumb, getSidebarConfig } from '../utils/config'
 import { loadMarkdownFile, getMarkdownPath, extractTOCFromHTML } from '../utils/markdown'
 import TableOfContents from '../components/TableOfContents.vue'
@@ -73,6 +74,7 @@ export default {
   },
   setup() {
     const route = useRoute()
+    const { t } = useI18n()
     const articleTitle = ref('')
     const articleContent = ref('')
     const breadcrumb = ref([])
@@ -147,8 +149,8 @@ export default {
         
       } catch (err) {
         console.error('Failed to load article:', err)
-        error.value = `加载文章失败: ${err.message}`
-        articleContent.value = `<p class="error">无法加载文章内容，请稍后重试。</p>`
+        error.value = `${t('common.error')}: ${err.message}`
+        articleContent.value = `<p class="error">${t('common.loadError')}</p>`
       } finally {
         loading.value = false
       }
@@ -197,8 +199,18 @@ export default {
       return titles[article] || '文章标题'
     }
     
+    // 监听语言切换事件
+    const handleLocaleChange = () => {
+      loadArticle()
+    }
+    
     onMounted(() => {
       loadArticle()
+      window.addEventListener('locale-changed', handleLocaleChange)
+    })
+    
+    onUnmounted(() => {
+      window.removeEventListener('locale-changed', handleLocaleChange)
     })
     
     watch(() => route.params, () => {
@@ -215,6 +227,7 @@ export default {
       loading,
       error,
       loadArticle,
+      t
     }
   }
 }

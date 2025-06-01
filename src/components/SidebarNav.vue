@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { loadConfig, getSidebarConfig } from '../utils/config'
 
@@ -160,9 +160,20 @@ export default {
       }
     }
     
+    // 监听语言切换事件
+    const handleLocaleChange = () => {
+      initSidebar()
+    }
+    
     // 初始化
     onMounted(() => {
       initSidebar()
+      window.addEventListener('locale-changed', handleLocaleChange)
+    })
+    
+    // 清理事件监听器
+    onUnmounted(() => {
+      window.removeEventListener('locale-changed', handleLocaleChange)
     })
     
     // 监听路由变化

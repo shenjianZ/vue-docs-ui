@@ -4,6 +4,7 @@
       :config="config"
       @toggle-sidebar="toggleSidebar"
       @toggle-theme="toggleTheme"
+      @toggle-ai="toggleAI"
     />
     
     <div class="docs-container">
@@ -32,6 +33,9 @@
         class="docs-toc"
       />
     </div>
+    
+    <!-- AI助手 -->
+    <AIAssistant ref="aiAssistant" />
   </div>
 </template>
 
@@ -41,6 +45,7 @@ import { useRoute } from 'vue-router'
 import HeaderNav from './HeaderNav.vue'
 import SidebarNav from './SidebarNav.vue'
 import TableOfContents from './TableOfContents.vue'
+import AIAssistant from './AIAssistant.vue'
 import { getDefaultTocConfig } from '../utils'
 import type { DocsConfig, TocItem } from '../types'
 
@@ -56,6 +61,7 @@ const props = withDefaults(defineProps<Props>(), {
 const route = useRoute()
 const sidebarOpen = ref(false)
 const tocHeaders = ref<TocItem[]>([])
+const aiAssistant = ref<any>(null)
 
 // 计算TOC配置
 const tocConfig = computed(() => getDefaultTocConfig(props.config))
@@ -87,6 +93,10 @@ function toggleTheme() {
 
 function updateTocHeaders(headers: TocItem[]) {
   tocHeaders.value = headers
+}
+
+function toggleAI() {
+  aiAssistant.value?.toggleAI()
 }
 
 // 初始化主题

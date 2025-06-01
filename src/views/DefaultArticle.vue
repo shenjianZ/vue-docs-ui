@@ -12,8 +12,7 @@
     
     <!-- 加载状态 -->
     <div v-if="loading" class="loading">
-      <div class="loading-spinner"></div>
-      <p>正在加载内容...</p>
+      <!-- <p>正在加载内容...</p> -->
     </div>
     
     <!-- 错误状态 -->
@@ -137,7 +136,24 @@ async function loadContent() {
   
   try {
     const path = route.path
-    const response = await fetch(`/docs${path}.md`)
+    
+    // 获取当前语言
+    function getCurrentLanguage() {
+      const saved = localStorage.getItem('language') || localStorage.getItem('vue-docs-locale')
+      if (saved) {
+        return saved
+      }
+      const browserLang = navigator.language || (navigator as any).userLanguage
+      return browserLang.startsWith('zh') ? 'zh' : 'en'
+    }
+    
+    // 根据语言构建正确的文档路径
+    const currentLang = getCurrentLanguage()
+    const langFolder = currentLang === 'en' ? 'en' : 'zh-cn'
+    const docPath = `/docs/${langFolder}${path}.md`
+    
+    console.log(`尝试加载文档: ${docPath}`)
+    const response = await fetch(docPath)
     
     if (response.ok) {
       markdownContent.value = await response.text()
@@ -216,25 +232,10 @@ onMounted(() => {
   text-align: center;
   padding: 4rem 2rem;
   
-  .loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid var(--border-color, #e2e8f0);
-    border-top: 4px solid var(--primary-color, #3b82f6);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 1rem;
-  }
-  
   p {
     color: var(--text-color-light, #64748b);
     margin: 0;
   }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }
 
 .error {

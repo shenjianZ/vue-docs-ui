@@ -188,10 +188,31 @@ export function generateAnchor(text, index = 0) {
  * 根据章节和文章获取markdown文件路径
  * @param {string} chapter - 章节名
  * @param {string} article - 文章名
+ * @param {string} lang - 语言代码 (zh-cn 或 en)
  * @returns {string} markdown文件路径
  */
-export function getMarkdownPath(chapter, article) {
-  return `/docs/${chapter}/${article}.md`
+export function getMarkdownPath(chapter, article, lang = null) {
+  // 获取当前语言
+  const currentLang = lang || getCurrentLanguage()
+  const langFolder = currentLang === 'en' ? 'en' : 'zh-cn'
+  
+  return `/docs/${langFolder}/${chapter}/${article}.md`
+}
+
+/**
+ * 获取当前语言
+ * @returns {string} 语言代码
+ */
+function getCurrentLanguage() {
+  // 优先从localStorage获取
+  const saved = localStorage.getItem('language') || localStorage.getItem('vue-docs-locale')
+  if (saved) {
+    return saved
+  }
+  
+  // 检查浏览器语言
+  const browserLang = navigator.language || navigator.userLanguage
+  return browserLang.startsWith('zh') ? 'zh' : 'en'
 }
 
 /**

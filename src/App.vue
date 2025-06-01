@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="app">
     <!-- 顶部导航栏 -->
-    <HeaderNav @toggle-sidebar="toggleSidebar" />
+    <HeaderNav @toggle-sidebar="toggleSidebar" @toggle-ai="toggleAI" />
     
     <!-- 主要内容区域 -->
     <div class="app-content">
@@ -22,6 +22,9 @@
         </div>
       </main>
     </div>
+    
+    <!-- AI助手 -->
+    <AIAssistant ref="aiAssistant" />
   </div>
 </template>
 
@@ -29,15 +32,18 @@
 import { ref } from 'vue'
 import HeaderNav from './components/HeaderNav.vue'
 import SidebarNav from './components/SidebarNav.vue'
+import AIAssistant from './components/AIAssistant.vue'
 
 export default {
   name: 'App',
   components: {
     HeaderNav,
     SidebarNav,
+    AIAssistant,
   },
   setup() {
     const sidebarOpen = ref(false)
+    const aiAssistant = ref(null)
     
     const toggleSidebar = () => {
       sidebarOpen.value = !sidebarOpen.value
@@ -47,10 +53,18 @@ export default {
       sidebarOpen.value = false
     }
     
+    const toggleAI = () => {
+      if (aiAssistant.value) {
+        aiAssistant.value.toggleAI()
+      }
+    }
+    
     return {
       sidebarOpen,
+      aiAssistant,
       toggleSidebar,
-      closeSidebar
+      closeSidebar,
+      toggleAI
     }
   }
 }
@@ -206,6 +220,7 @@ export default {
   --border-radius: 6px;
   --border-radius-lg: 8px;
   --bg-color-hover: rgba(59, 130, 246, 0.05);
+  --primary-color-dark: #2563eb;
 }
 
 // 深色主题支持
