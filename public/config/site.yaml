@@ -1,9 +1,14 @@
 # 网站基本配置
 site:
-  title: "机器学习教程"
-  description: "深入理解机器学习的原理与应用"
-  logo: "🤖"
-  author: "AI Team"
+  title: "Vue Docs UI 示例项目"
+  description: "基于 Vue Docs UI 构建的文档网站示例"
+  # logo支持以下格式：
+  # 1. emoji: "🤖"
+  # 2. 图片URL: "https://example.com/logo.png"
+  # 3. 本地图片: "/images/logo.png"
+  # 4. 相对路径: "./assets/logo.svg"
+  logo: "📚"
+  author: "Vue Docs UI Team"
   
 # 顶部导航配置
 navbar:
@@ -11,44 +16,61 @@ navbar:
     - title: "首页"
       link: "/"
       active: true
-    - title: "文档"
-      link: "/docs"
-    - title: "关于"
-      link: "/about"
+    - title: "指南"
+      link: "/guide"
+    - title: "进阶"
+      link: "/advanced"
+    - title: "示例"
+      link: "/examples"
+    - title: "GitHub"
+      link: "https://github.com/shenjianZ/vue-docs-ui"
+      external: true
 
 # 侧边栏导航配置
 sidebar:
   sections:
-    - title: "第一章 机器学习基础"
-      path: "/chapter1"
+    - title: "快速开始"
+      path: "/guide"
       children:
-        - title: "1.1 人工智能的两只手和四条腿"
-          path: "/chapter1/ai-basics"
-        - title: "1.2 机器学习是什么"
-          path: "/chapter1/what-is-ml"
-        - title: "1.3 时代造就机器学习"
-          path: "/chapter1/era-of-ml"
-        - title: "1.4 泛化能力：机器学习的核心"
-          path: "/chapter1/generalization"
-        - title: "1.5 归纳偏置：机器学习的灵魂"
-          path: "/chapter1/inductive-bias"
-        - title: "1.6 机器学习的限制"
-          path: "/chapter1/limitations"
-        - title: "1.7 本章小结"
-          path: "/chapter1/summary"
+        - title: "介绍"
+          path: "/guide/introduction"
+        - title: "安装"
+          path: "/guide/installation"
+        - title: "快速上手"
+          path: "/guide/quick-start"
+        - title: "配置说明"
+          path: "/guide/configuration"
           
-    - title: "第二章 数学基础"
-      path: "/chapter2"
+    - title: "进阶指南"
+      path: "/advanced"
       children:
-        - title: "2.1 线性代数基础"
-          path: "/chapter2/linear-algebra"
-        - title: "2.2 概率论基础"
-          path: "/chapter2/probability"
-        - title: "2.3 微积分基础"
-          path: "/chapter2/calculus"
+        - title: "自定义主题"
+          path: "/advanced/themes"
+        - title: "组件开发"
+          path: "/advanced/components"
+        - title: "API 参考"
+          path: "/advanced/api"
+        - title: "部署"
+          path: "/advanced/deployment"
+          
+    - title: "示例"
+      path: "/examples"
+      children:
+        - title: "基础示例"
+          path: "/examples/basic"
 
-# 主题配置
+# Theme Configuration
 theme:
+  # Default theme mode: 'light' | 'dark' | 'auto'
+  # light: Force light mode
+  # dark: Force dark mode
+  # auto: Follow system preference (default)
+  defaultMode: "auto"
+  
+  # Allow users to toggle theme (show theme toggle button)
+  allowToggle: true
+  
+  # Color Configuration
   colors:
     primary: "#3b82f6"
     secondary: "#64748b"
@@ -58,22 +80,62 @@ theme:
     text: "#1e293b"
     textSecondary: "#64748b"
     border: "#e2e8f0"
+    success: "#10b981"
+    warning: "#f59e0b"
+    error: "#ef4444"
     
   fonts:
     primary: "Inter, -apple-system, BlinkMacSystemFont, sans-serif"
-    mono: "JetBrains Mono, Consolas, monospace"
+    mono: "JetBrains Mono, Consolas, Monaco, monospace"
+    
+  # Layout Configuration
+  layout:
+    headerHeight: "60px"
+    sidebarWidth: "280px"
+    tocWidth: "240px"
+    contentMaxWidth: "1200px"
 
-# 目录配置
+# Table of Contents Configuration
 toc:
-  # 右侧目录默认显示的最大层级 (1-6)
-  # 1: 只显示 h1
-  # 2: 显示 h1, h2
-  # 3: 显示 h1, h2, h3
-  # 以此类推
-  maxLevel: 2
+  # Maximum heading level to display in TOC (1-6)
+  maxLevel: 3
   
-  # 是否启用目录
+  # Enable table of contents
   enabled: true
   
-  # 目录标题
-  title: "目录" 
+  # TOC title
+  title: "本页目录"
+  
+  # Show TOC on mobile devices
+  showOnMobile: false
+
+# Footer Configuration
+footer:
+  enabled: true
+  copyright: "© 2024 Vue Docs UI. All rights reserved."
+  links:
+    - title: "文档"
+      link: "/guide/introduction"
+    - title: "GitHub"
+      link: "https://github.com/shenjianZ/vue-docs-ui"
+      external: true
+    - title: "许可证"
+      link: "/license"
+
+# Analytics Configuration
+analytics:
+  # Google Analytics
+  google:
+    enabled: false
+    id: ""
+  
+  # Other analytics providers can be added here
+
+# PWA Configuration
+pwa:
+  enabled: false
+  name: "Vue Docs UI"
+  shortName: "VueDocsUI"
+  description: "Beautiful documentation websites made simple"
+  themeColor: "#3b82f6"
+  backgroundColor: "#ffffff" 

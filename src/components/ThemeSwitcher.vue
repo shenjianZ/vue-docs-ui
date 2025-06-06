@@ -46,7 +46,7 @@
         >
           <SunIcon v-if="isDark" :size="16" />
           <MoonIcon v-else :size="16" />
-          <span>{{ isDark ? '浅色' : '深色' }}</span>
+          <span>{{ isDark ? t('theme.lightMode') : t('theme.darkMode') }}</span>
         </button>
       </div>
     </div>
@@ -58,6 +58,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, inject } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { 
   Palette as PaletteIcon, 
   ChevronDown as ChevronDownIcon,
@@ -65,6 +66,9 @@ import {
   Sun as SunIcon,
   Moon as MoonIcon
 } from 'lucide-vue-next'
+
+// 国际化
+const { t } = useI18n()
 
 // 接收props
 const props = defineProps({
@@ -93,42 +97,42 @@ const isOpen = ref(false)
 const currentTheme = ref('default')
 const isDark = ref(false)
 
-// 主题配置
-const themes = ref([
+// 主题配置 - 使用computed来支持国际化
+const themes = computed(() => [
   {
     id: 'default',
-    name: '默认主题',
-    description: '经典蓝色风格',
+    name: t('theme.themes.default.name'),
+    description: t('theme.themes.default.description'),
     colors: { primary: '#3b82f6', accent: '#10b981' }
   },
   {
     id: 'vue',
-    name: 'Vue主题',
-    description: 'Vue官网绿色风格',
+    name: t('theme.themes.vue.name'),
+    description: t('theme.themes.vue.description'),
     colors: { primary: '#41b883', accent: '#35495e' }
   },
   {
     id: 'github',
-    name: 'GitHub主题',
-    description: 'GitHub黑白灰风格',
+    name: t('theme.themes.github.name'),
+    description: t('theme.themes.github.description'),
     colors: { primary: '#0969da', accent: '#6f42c1' }
   },
   {
     id: 'purple',
-    name: '紫色主题',
-    description: '优雅紫色风格',
+    name: t('theme.themes.purple.name'),
+    description: t('theme.themes.purple.description'),
     colors: { primary: '#8b5cf6', accent: '#ec4899' }
   },
   {
     id: 'orange',
-    name: '橙色主题',
-    description: '温暖橙色风格',
+    name: t('theme.themes.orange.name'),
+    description: t('theme.themes.orange.description'),
     colors: { primary: '#ea580c', accent: '#dc2626' }
   },
   {
     id: 'emerald',
-    name: '翠绿主题',
-    description: '清新翠绿风格',
+    name: t('theme.themes.emerald.name'),
+    description: t('theme.themes.emerald.description'),
     colors: { primary: '#059669', accent: '#0d9488' }
   }
 ])
@@ -136,7 +140,7 @@ const themes = ref([
 // 计算属性
 const currentThemeLabel = computed(() => {
   const theme = themes.value.find(t => t.id === currentTheme.value)
-  return theme ? theme.name : '默认主题'
+  return theme ? theme.name : t('theme.themes.default.name')
 })
 
 // 判断是否应该显示主题切换器
@@ -244,14 +248,25 @@ const handleKeydown = (event) => {
   }
 }
 
+// 监听语言切换事件
+const handleLocaleChange = () => {
+  console.log('ThemeSwitcher: 语言切换事件触发')
+  // 由于使用了computed属性，主题信息会自动更新
+  // 这里可以添加其他需要在语言切换时执行的逻辑
+}
+
 // 生命周期
 onMounted(() => {
   initTheme()
   document.addEventListener('keydown', handleKeydown)
+  // 监听语言切换事件
+  window.addEventListener('locale-changed', handleLocaleChange)
 })
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
+  // 清理语言切换监听器
+  window.removeEventListener('locale-changed', handleLocaleChange)
 })
 </script>
 

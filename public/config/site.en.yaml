@@ -1,54 +1,77 @@
-# Website basic configuration
+# Website Configuration
 site:
-  title: "Machine Learning Tutorial"
-  description: "Deep understanding of machine learning principles and applications"
-  logo: "🤖"
-  author: "AI Team"
+  title: "Vue Docs UI Example"
+  description: "Example documentation website built with Vue Docs UI"
+  # Logo formats supported:
+  # 1. emoji: "🤖"
+  # 2. image URL: "https://example.com/logo.png"
+  # 3. local image: "/images/logo.png"
+  # 4. relative path: "./assets/logo.svg"
+  logo: "📚"
+  author: "Vue Docs UI Team"
   
-# Top navigation configuration
+# Navigation Bar Configuration
 navbar:
   items:
     - title: "Home"
       link: "/"
       active: true
-    - title: "Documentation"
-      link: "/docs"
-    - title: "About"
-      link: "/about"
+    - title: "Guide"
+      link: "/guide"
+    - title: "Advanced"
+      link: "/advanced"
+    - title: "Examples"
+      link: "/examples"
+    - title: "GitHub"
+      link: "https://github.com/shenjianZ/vue-docs-ui"
+      external: true
 
-# Sidebar navigation configuration
+# Sidebar Navigation Configuration
 sidebar:
   sections:
-    - title: "Chapter 1: Machine Learning Basics"
-      path: "/chapter1"
+    - title: "Getting Started"
+      path: "/guide"
       children:
-        - title: "1.1 The Two Hands and Four Legs of AI"
-          path: "/chapter1/ai-basics"
-        - title: "1.2 What is Machine Learning"
-          path: "/chapter1/what-is-ml"
-        - title: "1.3 The Era That Created Machine Learning"
-          path: "/chapter1/era-of-ml"
-        - title: "1.4 Generalization: The Core of Machine Learning"
-          path: "/chapter1/generalization"
-        - title: "1.5 Inductive Bias: The Soul of Machine Learning"
-          path: "/chapter1/inductive-bias"
-        - title: "1.6 Limitations of Machine Learning"
-          path: "/chapter1/limitations"
-        - title: "1.7 Chapter Summary"
-          path: "/chapter1/summary"
+        - title: "Introduction"
+          path: "/guide/introduction"
+        - title: "Installation"
+          path: "/guide/installation"
+        - title: "Quick Start"
+          path: "/guide/quick-start"
+        - title: "Configuration"
+          path: "/guide/configuration"
           
-    - title: "Chapter 2: Mathematical Foundations"
-      path: "/chapter2"
+    - title: "Advanced Guide"
+      path: "/advanced"
       children:
-        - title: "2.1 Linear Algebra Basics"
-          path: "/chapter2/linear-algebra"
-        - title: "2.2 Probability Theory Basics"
-          path: "/chapter2/probability"
-        - title: "2.3 Calculus Basics"
-          path: "/chapter2/calculus"
+        - title: "Custom Themes"
+          path: "/advanced/themes"
+        - title: "Component Development"
+          path: "/advanced/components"
+        - title: "API Reference"
+          path: "/advanced/api"
+        - title: "Deployment"
+          path: "/advanced/deployment"
+    
+    - title: "Examples"
+      path: "/examples"
+      children:
+        - title: "Basic Example"
+          path: "/examples/basic"
+          
 
-# Theme configuration
+# Theme Configuration
 theme:
+  # Default theme mode: 'light' | 'dark' | 'auto'
+  # light: Force light mode
+  # dark: Force dark mode
+  # auto: Follow system preference (default)
+  defaultMode: "auto"
+  
+  # Allow users to toggle theme (show theme toggle button)
+  allowToggle: true
+  
+  # Color Configuration
   colors:
     primary: "#3b82f6"
     secondary: "#64748b"
@@ -63,17 +86,13 @@ theme:
     primary: "Inter, -apple-system, BlinkMacSystemFont, sans-serif"
     mono: "JetBrains Mono, Consolas, monospace"
 
-# Table of contents configuration
+# Table of Contents Configuration
 toc:
-  # Maximum level to display in TOC (1-6)
-  # 1: only h1
-  # 2: h1, h2
-  # 3: h1, h2, h3
-  # and so on
+  # Maximum heading level to display in TOC (1-6)
   maxLevel: 2
   
   # Enable table of contents
   enabled: true
   
   # TOC title
-  title: "Table of Contents" 
+  title: "On This Page" 

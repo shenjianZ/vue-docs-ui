@@ -57,7 +57,13 @@ export default {
     save: '保存设置',
     placeholder: '问我任何关于文档的问题...',
     configNotice: '请先配置AI设置',
-    welcome: '您好！我是AI助手，可以帮助您解答文档相关的问题。'
+    welcome: '您好！我是AI助手，可以帮助您解答文档相关的问题。',
+    demoMessages: {
+      user1: '你好，我想了解一下这个文档系统的功能。',
+      ai1: '很高兴为您介绍！这个文档系统包含以下主要功能：\n\n1. **多语言支持** - 支持中文和英文切换\n2. **AI助手** - 可以回答文档相关问题\n3. **响应式设计** - 支持各种设备尺寸\n4. **主题切换** - 支持亮色和暗色主题\n5. **搜索功能** - 快速查找文档内容',
+      user2: '这些功能很棒，可以详细介绍一下AI助手的功能吗？',
+      ai2: 'AI助手具备以下能力：\n\n**对话功能**\n- 实时对话交流\n- 支持markdown格式回复\n- 保存对话历史\n\n**技术特性**\n- 支持多种AI模型（OpenAI、Claude、Gemini等）\n- 可配置API密钥和端点\n- 连接测试功能\n\n**用户体验**\n- 可拖拽移动窗口\n- 可调整窗口大小\n- 平滑滚动体验'
+    }
   },
   settings: {
     title: '设置',
@@ -80,5 +86,37 @@ export default {
       missingBaseUrl: '缺少API基础URL',
       connectionFailed: '连接测试失败'
     }
+  },
+  
+  // 主题相关
+  theme: {
+    themes: {
+      default: {
+        name: '默认主题',
+        description: '经典蓝色风格'
+      },
+      vue: {
+        name: 'Vue主题',
+        description: 'Vue官网绿色风格'
+      },
+      github: {
+        name: 'GitHub主题',
+        description: 'GitHub黑白灰风格'
+      },
+      purple: {
+        name: '紫色主题',
+        description: '优雅紫色风格'
+      },
+      orange: {
+        name: '橙色主题',
+        description: '温暖橙色风格'
+      },
+      emerald: {
+        name: '翠绿主题',
+        description: '清新翠绿风格'
+      }
+    },
+    darkMode: '深色模式',
+    lightMode: '浅色模式'
   }
 } 

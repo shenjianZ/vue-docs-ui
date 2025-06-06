@@ -25,14 +25,14 @@
     },
     "deepseek-v3": {
       "modelId": "deepseek-chat",
-      "apiKey": "sk-3247ec27b56747cba7b0e723eddaf48e",
+      "apiKey": "",
       "baseUrl": "https://api.deepseek.com",
       "maxTokens": 4000,
       "temperature": 0.7
     },
     "deepseek-r1": {
       "modelId": "deepseek-reasoner",
-      "apiKey": "sk-3247ec27b56747cba7b0e723eddaf48e",
+      "apiKey": "",
       "baseUrl": "https://api.deepseek.com",
       "maxTokens": 4000,
       "temperature": 0.7

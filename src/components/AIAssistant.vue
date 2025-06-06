@@ -243,20 +243,37 @@ export default {
       return currentMessage.value.trim() && isConfigured.value && !isLoading.value
     })
     
+    // 初始化示例消息
+    const initDemoMessages = () => {
+      // 清空现有消息
+      messages.value = []
+      
+      // 添加欢迎消息和示例对话
+      addMessage('ai', t('ai.welcome'))
+      // 添加一些测试消息来验证滚动功能（从locales加载）
+      addMessage('user', t('ai.demoMessages.user1'))
+      addMessage('ai', t('ai.demoMessages.ai1'))
+      addMessage('user', t('ai.demoMessages.user2'))
+      addMessage('ai', t('ai.demoMessages.ai2'))
+    }
+    
+    // 监听语言切换事件
+    const handleLocaleChange = () => {
+      console.log('AIAssistant: 语言切换事件触发')
+      // 重新加载示例消息
+      initDemoMessages()
+    }
+    
     // 初始化
     onMounted(async () => {
       const config = getAIConfig()
       Object.assign(currentConfig, config)
       
-      // 添加欢迎消息
-      if (messages.value.length === 0) {
-        addMessage('ai', t('ai.welcome'))
-        // 添加一些测试消息来验证滚动功能
-        addMessage('user', '你好，我想了解一下这个文档系统的功能。')
-        addMessage('ai', '很高兴为您介绍！这个文档系统包含以下主要功能：\n\n1. **多语言支持** - 支持中文和英文切换\n2. **AI助手** - 可以回答文档相关问题\n3. **响应式设计** - 支持各种设备尺寸\n4. **主题切换** - 支持亮色和暗色主题\n5. **搜索功能** - 快速查找文档内容')
-        addMessage('user', '这些功能很棒，可以详细介绍一下AI助手的功能吗？')
-        addMessage('ai', 'AI助手具备以下能力：\n\n**对话功能**\n- 实时对话交流\n- 支持markdown格式回复\n- 保存对话历史\n\n**技术特性**\n- 支持多种AI模型（OpenAI、Claude、Gemini等）\n- 可配置API密钥和端点\n- 连接测试功能\n\n**用户体验**\n- 可拖拽移动窗口\n- 可调整窗口大小\n- 平滑滚动体验')
-      }
+      // 初始化示例消息
+      initDemoMessages()
+      
+      // 监听语言切换事件
+      window.addEventListener('locale-changed', handleLocaleChange)
     })
     
     // 切换AI面板
@@ -642,6 +659,8 @@ export default {
     onUnmounted(() => {
       stopDrag()
       stopResize()
+      // 清理语言切换监听器
+      window.removeEventListener('locale-changed', handleLocaleChange)
     })
     
     // 暴露方法给父组件

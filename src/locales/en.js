@@ -57,7 +57,13 @@ export default {
     save: 'Save Settings',
     placeholder: 'Ask me anything about the documentation...',
     configNotice: 'Please configure AI settings first',
-    welcome: 'Hello! I am an AI assistant that can help you answer questions related to the documentation.'
+    welcome: 'Hello! I am an AI assistant that can help you answer questions related to the documentation.',
+    demoMessages: {
+      user1: 'Hello, I would like to learn about the features of this documentation system.',
+      ai1: 'I am happy to introduce you to the main features of this documentation system:\n\n1. **Multi-language Support** - Supports Chinese and English switching\n2. **AI Assistant** - Can answer documentation-related questions\n3. **Responsive Design** - Supports various device sizes\n4. **Theme Switching** - Supports light and dark themes\n5. **Search Function** - Quickly find document content',
+      user2: 'These features are great! Can you introduce the AI assistant features in detail?',
+      ai2: 'AI Assistant has the following capabilities:\n\n**Conversation Features**\n- Real-time conversation\n- Supports markdown format replies\n- Save conversation history\n\n**Technical Features**\n- Supports multiple AI models (OpenAI, Claude, Gemini, etc.)\n- Configurable API keys and endpoints\n- Connection testing functionality\n\n**User Experience**\n- Draggable window\n- Resizable window\n- Smooth scrolling experience'
+    }
   },
   settings: {
     title: 'Settings',
@@ -80,5 +86,37 @@ export default {
       missingBaseUrl: 'Missing API base URL',
       connectionFailed: 'Connection test failed'
     }
+  },
+  
+  // Theme related
+  theme: {
+    themes: {
+      default: {
+        name: 'Default Theme',
+        description: 'Classic blue style'
+      },
+      vue: {
+        name: 'Vue Theme',
+        description: 'Vue official green style'
+      },
+      github: {
+        name: 'GitHub Theme',
+        description: 'GitHub black and white style'
+      },
+      purple: {
+        name: 'Purple Theme',
+        description: 'Elegant purple style'
+      },
+      orange: {
+        name: 'Orange Theme',
+        description: 'Warm orange style'
+      },
+      emerald: {
+        name: 'Emerald Theme',
+        description: 'Fresh emerald style'
+      }
+    },
+    darkMode: 'Dark Mode',
+    lightMode: 'Light Mode'
   }
 } 
