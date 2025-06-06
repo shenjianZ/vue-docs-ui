@@ -5,7 +5,23 @@ export default {
     api: 'API',
     examples: 'Examples',
     about: 'About',
-    language: 'Language'
+    language: 'Language',
+    tableOfContents: 'Table of Contents',
+    more: 'more'
+  },
+  sidebar: {
+    gettingStarted: 'Getting Started',
+    introduction: 'Introduction',
+    installation: 'Installation',
+    quickStart: 'Quick Start',
+    configuration: 'Configuration',
+    advancedGuide: 'Advanced Guide',
+    customThemes: 'Custom Themes',
+    componentDevelopment: 'Component Development',
+    apiReference: 'API Reference',
+    deployment: 'Deployment',
+    examples: 'Examples',
+    basicExample: 'Basic Example'
   },
   common: {
     search: 'Search',
@@ -23,13 +39,13 @@ export default {
     contributors: 'Contributors',
     custom: 'Custom',
     draggable: 'Draggable',
-    loading: 'Loading documentation...',
+    loading: 'Loading content...',
     error: 'Failed to load',
     retry: 'Retry',
     prevSection: '← Previous',
     nextSection: 'Next →',
-    articleTitle: 'Article Title',
-    noContent: 'No content',
+    articleTitle: 'Page',
+    noContent: 'Content for this page is being written...',
     loadError: 'Unable to load article content, please try again later.'
   },
   ai: {

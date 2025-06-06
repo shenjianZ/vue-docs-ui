@@ -2,24 +2,24 @@
   <div class="default-article">
     <!-- 面包屑导航 -->
     <nav v-if="breadcrumbs.length > 0" class="breadcrumb">
-      <router-link to="/">首页</router-link>
+      <router-link to="/">{{ t('nav.home') }}</router-link>
       <span v-for="(crumb, index) in breadcrumbs" :key="index">
         <span class="separator"> / </span>
-        <span v-if="index === breadcrumbs.length - 1" class="current">{{ crumb }}</span>
-        <router-link v-else :to="getBreadcrumbLink(index)">{{ crumb }}</router-link>
+        <span v-if="index === breadcrumbs.length - 1" class="current">{{ crumb.title }}</span>
+        <router-link v-else :to="crumb.path">{{ crumb.title }}</router-link>
       </span>
     </nav>
     
     <!-- 加载状态 -->
     <div v-if="loading" class="loading">
-      <!-- <p>正在加载内容...</p> -->
+      <p>{{ t('common.loading') }}</p>
     </div>
     
     <!-- 错误状态 -->
     <div v-else-if="error" class="error">
-      <h2>⚠️ 加载失败</h2>
+      <h2>⚠️ {{ t('common.error') }}</h2>
       <p>{{ error }}</p>
-      <button @click="loadContent" class="retry-btn">重试</button>
+      <button @click="loadContent" class="retry-btn">{{ t('common.retry') }}</button>
     </div>
     
     <!-- Markdown内容 -->
@@ -40,7 +40,7 @@
       >
         <span class="nav-arrow">←</span>
         <div class="nav-content">
-          <div class="nav-label">上一页</div>
+          <div class="nav-label">{{ t('common.prev') }}</div>
           <div class="nav-title">{{ prevPage.text }}</div>
         </div>
       </router-link>
@@ -51,7 +51,7 @@
         class="nav-link next"
       >
         <div class="nav-content">
-          <div class="nav-label">下一页</div>
+          <div class="nav-label">{{ t('common.next') }}</div>
           <div class="nav-title">{{ nextPage.text }}</div>
         </div>
         <span class="nav-arrow">→</span>
@@ -61,11 +61,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, inject } from 'vue'
+import { ref, computed, onMounted, watch, inject, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import MarkdownRenderer from '../components/MarkdownRenderer.vue'
 import type { DocsConfig, SidebarSection } from '../types'
 import { getNormalizedSidebar } from '../utils'
+// @ts-ignore
+import { loadConfig } from '../utils/config'
 
 interface Props {
   config?: DocsConfig
@@ -73,62 +76,115 @@ interface Props {
 
 const props = defineProps<Props>()
 const route = useRoute()
+const { t } = useI18n()
 const injectedConfig = inject<DocsConfig>('docsConfig')
 const updateTocHeaders = inject<(headers: any[]) => void>('updateTocHeaders')
-const config = props.config || injectedConfig
+
+// 响应式配置
+const currentConfig = ref<DocsConfig | null>(null)
+const config = computed(() => currentConfig.value || props.config || injectedConfig)
 
 const markdownContent = ref('')
 const loading = ref(true)
 const error = ref('')
 
-// 计算面包屑导航
+// 计算面包屑导航 - 基于配置文件的sidebar结构
 const breadcrumbs = computed(() => {
   const path = route.path
-  const parts = path.split('/').filter(Boolean)
-  return parts.map(part => {
-    // 简单的标题转换，可以根据需要优化
-    return part.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
-  })
-})
+  const configToUse = config.value
+  if (!configToUse?.sidebar) return []
 
-function getBreadcrumbLink(index: number) {
-  const path = route.path
-  const parts = path.split('/').filter(Boolean)
-  return '/' + parts.slice(0, index + 1).join('/')
-}
+  const normalizedSidebar = getNormalizedSidebar(configToUse)
+  const crumbs: Array<{title: string, path: string}> = []
+
+  // 递归查找当前路径在sidebar中的位置
+  function findPath(sections: SidebarSection[], targetPath: string): boolean {
+    for (const section of sections) {
+      // 检查当前section
+      if (section.link === targetPath || section.path === targetPath) {
+        crumbs.push({
+          title: section.text || section.title || '',
+          path: section.link || section.path || ''
+        })
+        return true
+      }
+
+      // 检查children
+      if (section.children && section.children.length > 0) {
+        // 先添加父级
+        const parentCrumb = {
+          title: section.text || section.title || '',
+          path: section.link || section.path || ''
+        }
+        
+        // 递归查找children
+        if (findPath(section.children, targetPath)) {
+          // 如果在children中找到了，在最前面插入父级
+          crumbs.unshift(parentCrumb)
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  findPath(normalizedSidebar, path)
+  return crumbs
+})
 
 // 获取上一页和下一页
 const pageNavigation = computed(() => {
-  if (!config?.sidebar) return { prevPage: null, nextPage: null }
+  if (!config.value?.sidebar) return { prevPage: null, nextPage: null }
   
   const allPages: any[] = []
   
   function collectPages(sections: SidebarSection[], parentPath = '') {
     sections.forEach(section => {
-      if (section.link) {
+      if (section.link || section.path) {
         allPages.push({
-          text: section.text,
-          link: section.link
+          text: section.text || section.title,
+          link: section.link || section.path
         })
       }
       if (section.children) {
-        collectPages(section.children, section.link || parentPath)
+        collectPages(section.children, section.link || section.path || parentPath)
       }
     })
   }
   
-  collectPages(getNormalizedSidebar(config))
+  collectPages(getNormalizedSidebar(config.value))
   
   const currentIndex = allPages.findIndex(page => page.link === route.path)
   
-  return {
+  const result = {
     prevPage: currentIndex > 0 ? allPages[currentIndex - 1] : null,
     nextPage: currentIndex < allPages.length - 1 ? allPages[currentIndex + 1] : null
   }
+  
+  console.log('DefaultArticle: 页面导航更新', {
+    currentPath: route.path,
+    allPages: allPages.map(p => ({ text: p.text, link: p.link })),
+    prevPage: result.prevPage,
+    nextPage: result.nextPage
+  })
+  
+  return result
 })
 
 const prevPage = computed(() => pageNavigation.value.prevPage)
 const nextPage = computed(() => pageNavigation.value.nextPage)
+
+// 初始化配置
+const initConfig = async () => {
+  try {
+    const loadedConfig = await loadConfig()
+    currentConfig.value = loadedConfig
+    console.log('DefaultArticle: 配置已加载', { sidebar: currentConfig.value?.sidebar })
+  } catch (err) {
+    console.error('DefaultArticle: 加载配置失败:', err)
+    currentConfig.value = null
+  }
+}
 
 async function loadContent() {
   loading.value = true
@@ -159,14 +215,14 @@ async function loadContent() {
       markdownContent.value = await response.text()
     } else if (response.status === 404) {
       // 如果没有找到对应的md文件，尝试生成默认内容
-      const pageTitle = route.meta?.title || breadcrumbs.value[breadcrumbs.value.length - 1] || '页面'
-      markdownContent.value = `# ${pageTitle}\n\n此页面的内容正在编写中...\n\n请稍后查看更新。`
+      const pageTitle = route.meta?.title || breadcrumbs.value[breadcrumbs.value.length - 1]?.title || t('common.articleTitle')
+      markdownContent.value = `# ${pageTitle}\n\n${t('common.noContent')}\n\n${t('common.loadError')}`
     } else {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     }
   } catch (err) {
     console.error('加载Markdown内容失败:', err)
-    error.value = err instanceof Error ? err.message : '未知错误'
+    error.value = err instanceof Error ? err.message : t('common.error')
   } finally {
     loading.value = false
   }
@@ -180,15 +236,29 @@ function onTocGenerated(headers: any[]) {
   console.log('TOC生成:', headers)
 }
 
+// 监听语言切换事件
+const handleLocaleChange = () => {
+  console.log('DefaultArticle: 语言切换事件触发')
+  // 重新加载配置和内容
+  initConfig().then(() => {
+    loadContent()
+  })
+}
+
 // 监听路由变化，重新加载内容
 watch(() => route.path, () => {
   loadContent()
-}, { immediate: true })
+}, { immediate: false })
 
-onMounted(() => {
-  if (!markdownContent.value) {
-    loadContent()
-  }
+onMounted(async () => {
+  await initConfig()
+  await loadContent()
+  // 监听语言切换事件
+  window.addEventListener('locale-changed', handleLocaleChange)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('locale-changed', handleLocaleChange)
 })
 </script>
 

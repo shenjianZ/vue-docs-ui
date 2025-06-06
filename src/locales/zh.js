@@ -5,7 +5,23 @@ export default {
     api: 'API',
     examples: '示例',
     about: '关于',
-    language: '语言'
+    language: '语言',
+    tableOfContents: '目录',
+    more: '更多'
+  },
+  sidebar: {
+    gettingStarted: '快速开始',
+    introduction: '介绍',
+    installation: '安装',
+    quickStart: '快速上手',
+    configuration: '配置说明',
+    advancedGuide: '进阶指南',
+    customThemes: '自定义主题',
+    componentDevelopment: '组件开发',
+    apiReference: 'API 参考',
+    deployment: '部署',
+    examples: '示例',
+    basicExample: '基础示例'
   },
   common: {
     search: '搜索',
@@ -23,13 +39,13 @@ export default {
     contributors: '贡献者',
     custom: '自定义',
     draggable: '可拖拽',
-    loading: '正在加载文档...',
+    loading: '正在加载内容...',
     error: '加载失败',
     retry: '重试',
     prevSection: '← 上一节',
     nextSection: '下一节 →',
-    articleTitle: '文章标题',
-    noContent: '暂无目录',
+    articleTitle: '页面',
+    noContent: '此页面的内容正在编写中...',
     loadError: '无法加载文章内容，请稍后重试。'
   },
   ai: {

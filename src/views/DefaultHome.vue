@@ -5,21 +5,21 @@
         <h1 class="hero-title">
           <div class="hero-logo">
             <img 
-              v-if="isImageLogo(config?.site?.logo)" 
-              :src="config?.site?.logo" 
-              :alt="config?.site?.title"
+              v-if="isImageLogo(siteInfo.logo)" 
+              :src="siteInfo.logo" 
+              :alt="siteInfo.title"
               class="logo-image"
             />
-            <span v-else class="logo-text">{{ config?.site?.logo }}</span>
+            <span v-else class="logo-text">{{ siteInfo.logo }}</span>
           </div>
-          {{ config?.site?.title }}
+          {{ siteInfo.title }}
         </h1>
-        <p class="hero-description">{{ config?.site?.description }}</p>
+        <p class="hero-description">{{ siteInfo.description }}</p>
       </div>
     </div>
     
     <div class="chapters">
-      <h2>目录</h2>
+      <h2>{{ t('nav.tableOfContents') }}</h2>
       <div class="chapter-grid">
         <div 
           v-for="chapter in normalizedSidebar" 
@@ -37,10 +37,9 @@
               <router-link v-if="section.link || section.path" :to="(section.link || section.path)!" class="section-link">
                 {{ section.text || section.title }}
               </router-link>
-              <span v-else class="section-text">{{ section.text || section.title }}</span>
             </div>
             <div v-if="chapter.children && chapter.children.length > 3" class="more-sections">
-              +{{ chapter.children.length - 3 }} 更多...
+              +{{ chapter.children.length - 3 }} {{ t('nav.more') }}...
             </div>
           </div>
         </div>
@@ -50,10 +49,13 @@
 </template>
 
 <script setup lang="ts">
-import { inject, computed } from 'vue'
+import { inject, computed, reactive, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import type { DocsConfig } from '../types'
 import { getNormalizedSidebar } from '../utils'
+// @ts-ignore
+import { loadConfig, getSiteInfo } from '../utils/config'
 
 interface Props {
   config?: DocsConfig
@@ -61,11 +63,26 @@ interface Props {
 
 const props = defineProps<Props>()
 const injectedConfig = inject<DocsConfig>('docsConfig')
-const config = props.config || injectedConfig
+const config = computed(() => props.config || injectedConfig)
 
-// 使用标准化的sidebar
+const { t } = useI18n()
+const router = useRouter()
+
+// 响应式的站点信息
+const siteInfo = reactive({
+  title: '',
+  description: '',
+  logo: '',
+  author: ''
+})
+
+// 响应式的配置数据
+const currentConfig = ref<DocsConfig | null>(null)
+
+// 使用标准化的sidebar - 从配置文件加载
 const normalizedSidebar = computed(() => {
-  return config ? getNormalizedSidebar(config) : []
+  const configToUse = currentConfig.value || config.value
+  return configToUse ? getNormalizedSidebar(configToUse) : []
 })
 
 // 判断logo是否为图片链接
@@ -79,7 +96,40 @@ const isImageLogo = (logo: string | undefined) => {
   return !!isUrl && !!hasImageExt
 }
 
-const router = useRouter()
+// 初始化配置 - 根据当前语言加载对应的配置文件
+const initConfig = async () => {
+  try {
+    // 重新加载配置，确保获取最新的语言版本
+    const loadedConfig = await loadConfig()
+    currentConfig.value = loadedConfig
+    
+    // 获取站点信息并更新响应式对象
+    const newSiteInfo = getSiteInfo()
+    Object.assign(siteInfo, newSiteInfo)
+    
+    console.log('DefaultHome: 配置已加载', { 
+      siteInfo: siteInfo, 
+      sidebar: currentConfig.value?.sidebar 
+    })
+  } catch (error) {
+    console.error('DefaultHome: 加载配置失败:', error)
+    // 设置默认值
+    Object.assign(siteInfo, {
+      title: 'Documentation',
+      description: 'Welcome to our documentation',
+      logo: '📚',
+      author: ''
+    })
+    currentConfig.value = null
+  }
+}
+
+// 监听语言切换事件
+const handleLocaleChange = () => {
+  console.log('DefaultHome: 语言切换事件触发')
+  // 重新加载配置以获取对应语言的内容
+  initConfig()
+}
 
 function navigateToChapter(chapter: any) {
   const link = chapter.link || chapter.path
@@ -95,6 +145,18 @@ function navigateToChapter(chapter: any) {
     }
   }
 }
+
+// 初始化
+onMounted(async () => {
+  await initConfig()
+  // 监听语言切换事件
+  window.addEventListener('locale-changed', handleLocaleChange)
+})
+
+// 清理事件监听器
+onUnmounted(() => {
+  window.removeEventListener('locale-changed', handleLocaleChange)
+})
 </script>
 
 <style lang="scss" scoped>
