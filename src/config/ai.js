@@ -5,13 +5,14 @@ export const AI_PROVIDERS = {
   GEMINI: 'gemini',
   DEEPSEEK: 'deepseek',
   DEEPSEEK_V3: 'deepseek-v3',
-  DEEPSEEK_R1: 'deepseek-r1',
+  DEEPSEEK_REASONER: 'deepseek-reasoner',
   CUSTOM: 'custom'
 }
 
 export const DEFAULT_AI_CONFIG = {
   enabled: false,
   provider: AI_PROVIDERS.OPENAI,
+  systemPrompt: '你是Vue Docs UI文档网站的AI助手。你的任务是帮助用户理解文档内容，回答技术问题，并提供有用的指导。\n\n请遵循以下原则：\n1. 提供准确、有用的技术信息\n2. 保持友好、专业的语调\n3. 如果不确定答案，请诚实地说明\n4. 尽量给出具体的代码示例或步骤\n5. 使用中文回答问题\n\n你特别擅长回答关于：\n- Vue.js 开发\n- 组件库使用\n- 文档编写和维护\n- 前端开发最佳实践\n- 技术概念解释',
   models: {
     [AI_PROVIDERS.OPENAI]: {
       modelId: 'gpt-3.5-turbo',
@@ -48,8 +49,8 @@ export const DEFAULT_AI_CONFIG = {
       maxTokens: 4000,
       temperature: 0.7
     },
-    [AI_PROVIDERS.DEEPSEEK_R1]: {
-      modelId: 'deepseek-r1',
+    [AI_PROVIDERS.DEEPSEEK_REASONER]: {
+      modelId: 'deepseek-reasoner',
       apiKey: '',
       baseUrl: 'https://api.deepseek.com',
       maxTokens: 4000,

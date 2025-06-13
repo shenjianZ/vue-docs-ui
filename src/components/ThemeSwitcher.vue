@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, inject } from 'vue'
+import { ref, computed, onMounted, onUnmounted, inject, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { 
   Palette as PaletteIcon, 
@@ -164,6 +164,44 @@ const shouldShowSwitcher = computed(() => {
 // 方法
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value
+  
+  // 在移动端动态调整下拉菜单的位置
+  if (isOpen.value) {
+    nextTick(() => {
+      adjustDropdownPosition()
+    })
+  }
+}
+
+// 动态调整下拉菜单位置
+const adjustDropdownPosition = () => {
+  const switcher = document.querySelector('.theme-switcher')
+  const dropdown = document.querySelector('.theme-dropdown')
+  
+  if (!switcher || !dropdown || window.innerWidth > 768) {
+    return
+  }
+  
+  const switcherRect = switcher.getBoundingClientRect()
+  const dropdownWidth = 240 // 默认宽度
+  const viewportWidth = window.innerWidth
+  const margin = 16 // 边距
+  
+  // 清除之前的对齐类
+  switcher.classList.remove('align-left', 'align-right')
+  
+  // 如果下拉菜单右对齐会超出右边界，则左对齐
+  if (switcherRect.right - dropdownWidth < margin) {
+    switcher.classList.add('align-left')
+  }
+  // 如果下拉菜单左对齐会超出左边界，则右对齐
+  else if (switcherRect.left + dropdownWidth > viewportWidth - margin) {
+    switcher.classList.add('align-right')
+  }
+  // 默认右对齐
+  else {
+    switcher.classList.add('align-right')
+  }
 }
 
 const closeDropdown = () => {
@@ -248,6 +286,13 @@ const handleKeydown = (event) => {
   }
 }
 
+// 窗口大小变化处理
+const handleResize = () => {
+  if (isOpen.value) {
+    adjustDropdownPosition()
+  }
+}
+
 // 监听语言切换事件
 const handleLocaleChange = () => {
   console.log('ThemeSwitcher: 语言切换事件触发')
@@ -259,12 +304,14 @@ const handleLocaleChange = () => {
 onMounted(() => {
   initTheme()
   document.addEventListener('keydown', handleKeydown)
+  window.addEventListener('resize', handleResize)
   // 监听语言切换事件
   window.addEventListener('locale-changed', handleLocaleChange)
 })
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
+  window.removeEventListener('resize', handleResize)
   // 清理语言切换监听器
   window.removeEventListener('locale-changed', handleLocaleChange)
 })
@@ -320,6 +367,19 @@ onUnmounted(() => {
   box-shadow: var(--shadow-lg);
   z-index: 1000;
   overflow: hidden;
+  transition: all 0.2s ease;
+  animation: slideIn 0.15s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .theme-options {
@@ -427,14 +487,42 @@ onUnmounted(() => {
 // 响应式设计
 @media (max-width: 768px) {
   .theme-dropdown {
+    // 在移动端时，确保下拉菜单不会超出屏幕边界
+    right: 0;
+    left: auto;
+    min-width: 240px;
+    max-width: calc(100vw - 2rem);
+    
+    // 如果按钮靠近右边界，从右边对齐
+    // 如果按钮靠近左边界，从左边对齐
+    transform: translateX(0);
+  }
+  
+  // 当下拉菜单会超出右边界时，从左边对齐
+  .theme-switcher.align-left .theme-dropdown {
     right: auto;
     left: 0;
-    min-width: 250px;
+  }
+  
+  // 当下拉菜单会超出左边界时，确保从右边对齐
+  .theme-switcher.align-right .theme-dropdown {
+    right: 0;
+    left: auto;
   }
   
   .theme-button {
+    padding: 0.5rem;
+    
     .theme-label {
       display: none;
+    }
+  }
+  
+  // 进一步缩小移动端的最小宽度
+  @media (max-width: 480px) {
+    .theme-dropdown {
+      min-width: 200px;
+      max-width: calc(100vw - 1rem);
     }
   }
 }

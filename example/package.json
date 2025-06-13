@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Vue Docs UI 使用示例",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
   },

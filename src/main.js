@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
 import './styles/main.scss'
-import { loadConfig, getSiteInfo, loadAllConfigs } from './utils/config'
+import { loadConfig, getSiteInfo, loadAllConfigs, updatePageMeta } from './utils/config'
 import { loadAIConfig } from './config/ai'
 import { i18n } from './locales/index.js'
 import './utils/debug'
@@ -44,14 +44,8 @@ async function initApp() {
     await loadAllConfigs()
     const siteInfo = getSiteInfo()
     
-    // 更新页面title
-    if (siteInfo.title) {
-      document.title = siteInfo.title
-      const titleElement = document.getElementById('page-title')
-      if (titleElement) {
-        titleElement.textContent = siteInfo.title
-      }
-    }
+    // 更新页面meta信息
+    updatePageMeta(siteInfo)
     
     const app = createApp(App)
     app.use(router)

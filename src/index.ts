@@ -43,6 +43,31 @@ export {
   getNormalizedNavbar
 }
 
+// 更新页面meta信息
+function updatePageMeta(siteInfo: any) {
+  if (!siteInfo) return
+  
+  // 更新页面title
+  if (siteInfo.title) {
+    document.title = siteInfo.title
+  }
+  
+  // 更新页面description
+  if (siteInfo.description) {
+    // 查找现有的description meta标签
+    let descriptionMeta = document.querySelector('meta[name="description"]')
+    if (descriptionMeta) {
+      descriptionMeta.setAttribute('content', siteInfo.description)
+    } else {
+      // 如果不存在，创建一个新的description meta标签
+      descriptionMeta = document.createElement('meta')
+      descriptionMeta.setAttribute('name', 'description')
+      descriptionMeta.setAttribute('content', siteInfo.description)
+      document.head.appendChild(descriptionMeta)
+    }
+  }
+}
+
 // 简化的应用创建函数 - 开箱即用
 export async function createDocsApp(options: {
   configPath?: string
@@ -73,6 +98,11 @@ export async function createDocsApp(options: {
     const config = await loadConfig(configPath)
     console.log('Config loaded:', config)
     
+    // 更新页面meta信息
+    if (config.site) {
+      updatePageMeta(config.site)
+    }
+
     // 创建路由
     const routes = [
       {

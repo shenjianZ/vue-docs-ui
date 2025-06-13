@@ -263,4 +263,33 @@ export function getBreadcrumb(path) {
   }
   
   return []
+}
+
+// 更新页面meta信息
+export function updatePageMeta(siteInfo) {
+  if (!siteInfo) return
+  
+  // 更新页面title
+  if (siteInfo.title) {
+    document.title = siteInfo.title
+    const titleElement = document.getElementById('page-title')
+    if (titleElement) {
+      titleElement.textContent = siteInfo.title
+    }
+  }
+  
+  // 更新页面description
+  if (siteInfo.description) {
+    // 查找现有的description meta标签
+    let descriptionMeta = document.querySelector('meta[name="description"]')
+    if (descriptionMeta) {
+      descriptionMeta.setAttribute('content', siteInfo.description)
+    } else {
+      // 如果不存在，创建一个新的description meta标签
+      descriptionMeta = document.createElement('meta')
+      descriptionMeta.setAttribute('name', 'description')
+      descriptionMeta.setAttribute('content', siteInfo.description)
+      document.head.appendChild(descriptionMeta)
+    }
+  }
 } 

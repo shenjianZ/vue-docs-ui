@@ -49,6 +49,7 @@ AI助手默认以浮动按钮的形式出现在页面右下角。点击机器人
 {
   "enabled": true,
   "provider": "deepseek",
+  "systemPrompt": "你是Vue Docs UI文档网站的AI助手。你的任务是帮助用户理解文档内容，回答技术问题，并提供有用的指导。请使用中文回答问题。",
   "models": {
     "openai": {
       "modelId": "gpt-3.5-turbo",
@@ -71,8 +72,8 @@ AI助手默认以浮动按钮的形式出现在页面右下角。点击机器人
       "maxTokens": 4000,
       "temperature": 0.7
     },
-    "deepseek-r1": {
-      "modelId": "deepseek-r1",
+    "deepseek-reasoner": {
+      "modelId": "deepseek-reasoner",
       "apiKey": "your-deepseek-key-here",
       "baseUrl": "https://api.deepseek.com",
       "maxTokens": 4000,
@@ -111,7 +112,7 @@ AI助手默认以浮动按钮的形式出现在页面右下角。点击机器人
 - **获取API密钥**: https://makersuite.google.com/app/apikey
 
 ### DeepSeek
-- **模型示例**: `deepseek-chat`, `deepseek-r1`
+- **模型示例**: `deepseek-chat`, `deepseek-reasoner`
 - **API文档**: https://platform.deepseek.com/api-docs
 - **获取API密钥**: https://platform.deepseek.com/api_keys
 - **特点**: 高性价比的中文友好AI模型，支持长上下文

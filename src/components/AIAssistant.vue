@@ -54,7 +54,7 @@
             <option value="claude">Claude</option>
             <option value="gemini">Gemini</option>
             <option value="deepseek-v3">DeepSeek V3</option>
-            <option value="deepseek-r1">DeepSeek R1</option>
+            <option value="deepseek-reasoner">DeepSeek Reasoner</option>
             <option value="custom">{{ t('common.custom') }}</option>
           </select>
         </div>
@@ -93,7 +93,7 @@
           </button>
           <button class="save-btn" @click="saveSettings">
             <Save :size="14" />
-            {{ t('settings.saveSettings') }}
+            {{ t('settings.closeSettings') }}
           </button>
         </div>
         
@@ -243,6 +243,30 @@ export default {
       return currentMessage.value.trim() && isConfigured.value && !isLoading.value
     })
     
+    // 监听配置变化，实时更新
+    watch(
+      () => currentProviderConfig.value,
+      (newConfig) => {
+        if (newConfig && currentConfig.provider) {
+          // 实时更新配置到全局
+          updateAIConfig(currentConfig)
+          // 清除之前的测试结果
+          testResult.value = null
+        }
+      },
+      { deep: true }
+    )
+    
+    // 监听提供商变化
+    watch(
+      () => currentConfig.provider,
+      () => {
+        // 提供商变化时也更新配置
+        updateAIConfig(currentConfig)
+        testResult.value = null
+      }
+    )
+    
     // 初始化示例消息
     const initDemoMessages = () => {
       // 清空现有消息
@@ -295,8 +319,8 @@ export default {
     
     // 提供商变更
     const onProviderChange = () => {
-      // 提供商变更时可以做一些处理
-      testResult.value = null
+      // 提供商变更时的处理已经通过 watch 自动完成
+      // 这里保留函数以防模板中有引用
     }
     
     // 测试连接
@@ -323,11 +347,10 @@ export default {
     
     // 保存设置
     const saveSettings = () => {
-      updateAIConfig(currentConfig)
-      testResult.value = null
+      // 配置已经通过 watch 实时更新，这里只需要关闭设置面板
       showSettings.value = false
       
-      // 可以添加保存成功提示
+      // 添加保存成功提示
       addMessage('ai', t('settings.saveSuccess'))
     }
     
@@ -524,6 +547,11 @@ export default {
     
     // 拖拽开始
     const startDrag = (event) => {
+      // 移动端禁用拖拽
+      if (window.innerWidth <= 768) {
+        return
+      }
+      
       if (isResizing.value) return
       event.preventDefault()
       isDragging.value = true
@@ -534,10 +562,11 @@ export default {
       dragOffset.x = clientX - panelPosition.x
       dragOffset.y = clientY - panelPosition.y
       
-      document.addEventListener('mousemove', onDrag)
-      document.addEventListener('mouseup', stopDrag)
-      document.addEventListener('touchmove', onDrag)
-      document.addEventListener('touchend', stopDrag)
+      // 明确指定 passive 选项以避免浏览器警告
+      document.addEventListener('mousemove', onDrag, { passive: false })
+      document.addEventListener('mouseup', stopDrag, { passive: true })
+      document.addEventListener('touchmove', onDrag, { passive: false })
+      document.addEventListener('touchend', stopDrag, { passive: true })
       
       document.body.style.userSelect = 'none'
     }
@@ -558,16 +587,21 @@ export default {
     // 拖拽结束
     const stopDrag = () => {
       isDragging.value = false
-      document.removeEventListener('mousemove', onDrag)
-      document.removeEventListener('mouseup', stopDrag)
-      document.removeEventListener('touchmove', onDrag)
-      document.removeEventListener('touchend', stopDrag)
+      document.removeEventListener('mousemove', onDrag, { passive: false })
+      document.removeEventListener('mouseup', stopDrag, { passive: true })
+      document.removeEventListener('touchmove', onDrag, { passive: false })
+      document.removeEventListener('touchend', stopDrag, { passive: true })
       
       document.body.style.userSelect = ''
     }
     
     // 开始拉伸
     const startResize = (direction, event) => {
+      // 移动端禁用拉伸
+      if (window.innerWidth <= 768) {
+        return
+      }
+      
       isResizing.value = true
       resizeDirection.value = direction
       
@@ -580,8 +614,8 @@ export default {
       resizeStartPos.panelX = panelPosition.x
       resizeStartPos.panelY = panelPosition.y
       
-      document.addEventListener('mousemove', onResize)
-      document.addEventListener('mouseup', stopResize)
+      document.addEventListener('mousemove', onResize, { passive: false })
+      document.addEventListener('mouseup', stopResize, { passive: true })
       document.body.style.userSelect = 'none'
       document.body.style.cursor = getCursorForDirection(direction)
       
@@ -634,8 +668,8 @@ export default {
     const stopResize = () => {
       isResizing.value = false
       resizeDirection.value = ''
-      document.removeEventListener('mousemove', onResize)
-      document.removeEventListener('mouseup', stopResize)
+      document.removeEventListener('mousemove', onResize, { passive: false })
+      document.removeEventListener('mouseup', stopResize, { passive: true })
       document.body.style.userSelect = ''
       document.body.style.cursor = ''
     }
@@ -717,6 +751,9 @@ export default {
   @media (max-width: 768px) {
     bottom: 1rem;
     right: 1rem;
+    
+    // 确保按钮在移动端不被遮挡
+    z-index: 1002;
   }
 }
 
@@ -735,9 +772,35 @@ export default {
   transition: all 0.3s ease;
   position: relative;
   
+  // 为触摸设备增加更大的点击区域
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  // 移动端优化
+  @media (max-width: 768px) {
+    width: 60px;
+    height: 60px;
+    
+    // 增加点击区域
+    &::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      bottom: -8px;
+      left: -8px;
+      border-radius: 50%;
+    }
+    
+    // 移动端按下效果
+    &:active {
+      transform: scale(0.95);
+    }
   }
   
   .notification-dot {
@@ -749,6 +812,13 @@ export default {
     background: #ff4444;
     border-radius: 50%;
     border: 2px solid white;
+    
+    @media (max-width: 768px) {
+      top: 10px;
+      right: 10px;
+      width: 14px;
+      height: 14px;
+    }
   }
 }
 
@@ -774,10 +844,27 @@ export default {
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   }
   
+  // 移动端全屏模式
+  @media (max-width: 768px) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+    transform: none !important;
+    z-index: 1003;
+    
+    // 滑入动画
+    animation: slideInFromBottom 0.3s ease-out;
+  }
+  
   @media (max-width: 480px) {
-    min-width: 280px;
-    max-width: calc(100vw - 1rem);
-    max-height: calc(100vh - 100px);
+    min-width: unset;
   }
 }
 
@@ -793,6 +880,17 @@ export default {
   
   &:active {
     cursor: grabbing;
+  }
+  
+  // 移动端优化
+  @media (max-width: 768px) {
+    padding: 1rem 1rem;
+    cursor: default;
+    
+    // 移动端禁用拖拽提示
+    .drag-hint {
+      display: none;
+    }
   }
 }
 
@@ -828,9 +926,35 @@ export default {
     cursor: pointer;
     transition: all 0.2s ease;
     
+    // 触摸优化
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    
     &:hover {
       background: var(--bg-color-hover);
       color: var(--text-color);
+    }
+    
+    // 移动端优化
+    @media (max-width: 768px) {
+      width: 44px;
+      height: 44px;
+      
+      // 增加点击区域
+      &::before {
+        content: '';
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        bottom: -6px;
+        left: -6px;
+        border-radius: 6px;
+      }
+      
+      &:active {
+        background: var(--bg-color-hover);
+        transform: scale(0.95);
+      }
     }
   }
 }
@@ -866,10 +990,20 @@ export default {
       outline: none;
       border-color: var(--primary-color);
     }
+    
+    // 移动端优化
+    @media (max-width: 768px) {
+      padding: 1rem;
+      font-size: 16px; // 防止iOS缩放
+      min-height: 48px;
+      
+      // 触摸优化
+      -webkit-tap-highlight-color: transparent;
+    }
   }
 }
 
-.setting-actions {
+  .setting-actions {
   display: flex;
   gap: 0.5rem;
   margin-top: 1rem;
@@ -887,9 +1021,24 @@ export default {
     font-size: 0.9rem;
     transition: all 0.2s ease;
     
+    // 触摸优化
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    
     &:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+    }
+    
+    // 移动端优化
+    @media (max-width: 768px) {
+      padding: 1rem;
+      font-size: 1rem;
+      min-height: 48px;
+      
+      &:active:not(:disabled) {
+        transform: scale(0.98);
+      }
     }
   }
   
@@ -1139,6 +1288,17 @@ export default {
 .chat-input {
   padding: 1rem;
   border-top: 1px solid var(--border-color);
+  
+  // 移动端键盘适配
+  @media (max-width: 768px) {
+    padding: 1rem;
+    
+    // 确保在虚拟键盘弹出时仍可见
+    position: sticky;
+    bottom: 0;
+    background: var(--bg-color);
+    z-index: 10;
+  }
 }
 
 .input-wrapper {
@@ -1168,6 +1328,18 @@ export default {
       opacity: 0.6;
       cursor: not-allowed;
     }
+    
+    // 移动端优化
+    @media (max-width: 768px) {
+      padding: 1rem;
+      font-size: 16px; // 防止iOS自动缩放
+      min-height: 48px;
+      max-height: 120px;
+      
+      // 触摸优化
+      -webkit-tap-highlight-color: transparent;
+      -webkit-appearance: none;
+    }
   }
   
   .send-btn {
@@ -1191,6 +1363,21 @@ export default {
       opacity: 0.6;
       cursor: not-allowed;
     }
+    
+    // 移动端优化
+    @media (max-width: 768px) {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      
+      // 触摸优化
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      
+      &:active:not(:disabled) {
+        transform: scale(0.95);
+      }
+    }
   }
 }
 
@@ -1206,6 +1393,18 @@ export default {
   font-size: 0.85rem;
 }
 
+// 滑入动画
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 // 拉伸手柄样式
 .resize-handles {
   position: absolute;
@@ -1214,6 +1413,11 @@ export default {
   right: 0;
   bottom: 0;
   pointer-events: none;
+  
+  // 移动端隐藏拉伸手柄
+  @media (max-width: 768px) {
+    display: none;
+  }
 }
 
 .resize-handle {

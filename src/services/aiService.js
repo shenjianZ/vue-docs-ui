@@ -18,7 +18,7 @@ class AIService {
         case 'openai':
         case 'deepseek':
         case 'deepseek-v3':
-        case 'deepseek-r1':
+        case 'deepseek-reasoner':
         case 'custom':
           // 使用OpenAI SDK，支持DeepSeek和其他兼容API
           client = new OpenAI({
@@ -125,7 +125,8 @@ class AIService {
 
   // 获取系统提示词
   getSystemPrompt(context = {}) {
-    const basePrompt = `你是Vue Docs UI文档网站的AI助手。你的任务是帮助用户理解文档内容，回答技术问题，并提供有用的指导。
+    const aiConfig = getAIConfig()
+    const basePrompt = aiConfig.systemPrompt || `你是Vue Docs UI文档网站的AI助手。你的任务是帮助用户理解文档内容，回答技术问题，并提供有用的指导。
 
 请遵循以下原则：
 1. 提供准确、有用的技术信息
