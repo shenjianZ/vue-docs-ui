@@ -119,5 +119,51 @@ export default {
     },
     darkMode: 'Dark Mode',
     lightMode: 'Light Mode'
+  },
+  
+  // Reading progress related
+  readingProgress: {
+    estimatedTime: 'Estimated reading',
+    progress: 'Progress',
+    words: 'words',
+    minutes: 'minutes',
+    autoScroll: 'Auto scroll',
+    stopAutoScroll: 'Stop auto scroll',
+    startAutoScroll: 'Start auto scroll',
+    backToTop: 'Back to top',
+    showInfo: 'Show info',
+    hideInfo: 'Hide info'
+  },
+  
+  // Feedback system related
+  feedback: {
+    title: 'Page Feedback',
+    triggerTitle: 'Provide feedback for documentation',
+    quickQuestion: 'Is this page helpful to you?',
+    helpful: 'Helpful',
+    notHelpful: 'Not helpful',
+    feedbackType: 'Feedback type',
+    selectType: 'Please select',
+    types: {
+      content: 'Content issue',
+      typo: 'Typo',
+      missing: 'Missing information',
+      suggestion: 'Improvement suggestion',
+      bug: 'Page error',
+      question: 'Question',
+      other: 'Other'
+    },
+    detailLabel: 'Detailed description',
+    detailPlaceholder: 'Please describe your feedback in detail...',
+    contactLabel: 'Allow us to contact you for more information if needed',
+    emailPlaceholder: 'Your email (optional)',
+    submit: 'Submit feedback',
+    cancel: 'Cancel',
+    successMessage: 'Thank you for your feedback!',
+    stats: {
+      visitors: 'visitors',
+      helpful: 'helpful',
+      feedback: 'feedback'
+    }
   }
 } 

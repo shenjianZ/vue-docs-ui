@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>离线模式 - Vue Docs UI</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --primary-color: #3b82f6;
+      --text-color: #1f2937;
+      --text-color-light: #6b7280;
+      --bg-color: #ffffff;
+      --bg-color-secondary: #f9fafb;
+      --border-color: #e5e7eb;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text-color: #f9fafb;
+        --text-color-light: #d1d5db;
+        --bg-color: #111827;
+        --bg-color-secondary: #1f2937;
+        --border-color: #374151;
+      }
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .offline-container {
+      max-width: 480px;
+      text-align: center;
+      background: var(--bg-color-secondary);
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border-color);
+    }
+    
+    .offline-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 2rem;
+      background: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      opacity: 0.9;
+    }
+    
+    .offline-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-color);
+    }
+    
+    .offline-description {
+      color: var(--text-color-light);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+    
+    .offline-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-primary {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--bg-color);
+      border-color: var(--primary-color);
+    }
+    
+    .network-status {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: var(--bg-color);
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--warning-color);
+      animation: pulse 2s infinite;
+    }
+    
+    .status-dot.online {
+      background: var(--success-color);
+      animation: none;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .cached-pages {
+      margin-top: 2rem;
+      text-align: left;
+    }
+    
+    .cached-pages h3 {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: var(--text-color);
+      text-align: center;
+    }
+    
+    .page-list {
+      list-style: none;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .page-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 6px;
+      margin-bottom: 0.25rem;
+      transition: background 0.2s ease;
+    }
+    
+    .page-item:hover {
+      background: var(--bg-color);
+    }
+    
+    .page-item a {
+      color: var(--text-color);
+      text-decoration: none;
+      flex: 1;
+      font-size: 0.9rem;
+    }
+    
+    .page-item a:hover {
+      color: var(--primary-color);
+    }
+    
+    .page-icon {
+      width: 16px;
+      height: 16px;
+      opacity: 0.6;
+    }
+    
+    @media (max-width: 480px) {
+      .offline-container {
+        padding: 2rem 1.5rem;
+      }
+      
+      .offline-actions {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">
+      📱
+    </div>
+    
+    <h1 class="offline-title">离线模式</h1>
+    
+    <p class="offline-description">
+      您当前处于离线状态，但您仍然可以浏览已缓存的文档内容。
+    </p>
+    
+    <div class="offline-actions">
+      <button class="btn btn-primary" onclick="retryConnection()">
+        🔄 重新连接
+      </button>
+      <a href="/" class="btn btn-secondary">
+        🏠 返回首页
+      </a>
+    </div>
+    
+    <div class="network-status">
+      <div class="status-indicator">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">检查网络连接中...</span>
+      </div>
+    </div>
+    
+    <div class="cached-pages">
+      <h3>📚 可离线浏览的页面</h3>
+      <ul class="page-list" id="cachedPagesList">
+        <li class="page-item">
+          <span class="page-icon">📄</span>
+          <a href="/">首页</a>
+        </li>
+        <li class="page-item">
+          <span class="page-icon">📖</span>
+          <a href="/guide">使用指南</a>
+        </li>
+        <li class="page-item">
+          <span class="page-icon">⚙️</span>
+          <a href="/config">配置文档</a>
+        </li>
+        <li class="page-item">
+          <span class="page-icon">🔧</span>
+          <a href="/api">API 参考</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // 网络状态检查
+    function checkNetworkStatus() {
+      const statusDot = document.getElementById('statusDot')
+      const statusText = document.getElementById('statusText')
+      
+      if (navigator.onLine) {
+        statusDot.classList.add('online')
+        statusText.textContent = '网络连接正常'
+      } else {
+        statusDot.classList.remove('online')
+        statusText.textContent = '网络连接断开'
+      }
+    }
+    
+    // 重试连接
+    function retryConnection() {
+      const btn = event.target
+      const originalText = btn.innerHTML
+      
+      btn.innerHTML = '🔄 连接中...'
+      btn.disabled = true
+      
+      // 尝试加载一个小的资源来测试连接
+      fetch('/manifest.json', { 
+        cache: 'no-cache',
+        mode: 'no-cors'
+      })
+      .then(() => {
+        // 连接成功，重新加载页面
+        window.location.reload()
+      })
+      .catch(() => {
+        // 连接失败
+        btn.innerHTML = '❌ 连接失败'
+        setTimeout(() => {
+          btn.innerHTML = originalText
+          btn.disabled = false
+        }, 2000)
+      })
+    }
+    
+    // 加载缓存的页面列表
+    async function loadCachedPages() {
+      if ('caches' in window) {
+        try {
+          const cacheNames = await caches.keys()
+          const cachedUrls = new Set()
+          
+          for (const cacheName of cacheNames) {
+            const cache = await caches.open(cacheName)
+            const requests = await cache.keys()
+            
+            requests.forEach(request => {
+              const url = new URL(request.url)
+              if (url.pathname !== '/offline.html' && 
+                  !url.pathname.includes('.') && 
+                  url.pathname !== '/') {
+                cachedUrls.add(url.pathname)
+              }
+            })
+          }
+          
+          // 更新页面列表
+          const pagesList = document.getElementById('cachedPagesList')
+          
+          // 添加发现的缓存页面
+          cachedUrls.forEach(url => {
+            const li = document.createElement('li')
+            li.className = 'page-item'
+            li.innerHTML = `
+              <span class="page-icon">📄</span>
+              <a href="${url}">${url}</a>
+            `
+            pagesList.appendChild(li)
+          })
+          
+        } catch (error) {
+          console.error('Failed to load cached pages:', error)
+        }
+      }
+    }
+    
+    // 监听网络状态变化
+    window.addEventListener('online', checkNetworkStatus)
+    window.addEventListener('offline', checkNetworkStatus)
+    
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      checkNetworkStatus()
+      loadCachedPages()
+      
+      // 定期检查网络状态
+      setInterval(checkNetworkStatus, 5000)
+    })
+    
+    // 键盘快捷键
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'r' && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault()
+        retryConnection()
+      }
+      
+      if (event.key === 'h' && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault()
+        window.location.href = '/'
+      }
+    })
+  </script>
+</body>
+</html> 

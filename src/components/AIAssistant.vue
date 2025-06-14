@@ -2,6 +2,7 @@
   <div class="ai-assistant" :class="{ 'ai-assistant--open': isOpen }">
     <!-- AI按钮 -->
     <button 
+      v-if="!hideButton"
       class="ai-trigger-btn" 
       @click="toggleAI"
       :title="isOpen ? t('ai.close') : t('ai.open')"
@@ -16,11 +17,15 @@
       class="ai-panel"
       :style="panelStyle"
       @wheel.stop
+      @click.stop
+      @touchstart.stop
+      @touchend.stop
     >
       <div 
         class="ai-header"
         @mousedown="startDrag"
         @touchstart="startDrag"
+        @click.stop
       >
         <div class="ai-title">
           <Bot :size="18" />
@@ -30,7 +35,8 @@
         <div class="ai-actions">
           <button 
             class="settings-btn" 
-            @click="showSettings = !showSettings"
+            @click.stop="toggleSettings"
+            @touchstart.stop
             :title="t('ai.settings')"
           >
             <Settings :size="16" />
@@ -46,10 +52,22 @@
       </div>
       
       <!-- 设置面板 -->
-      <div v-if="showSettings" class="ai-settings">
+      <div 
+        v-if="showSettings" 
+        class="ai-settings" 
+        @click.stop 
+        @touchstart.stop
+        @touchend.stop
+        @touchmove.stop
+      >
         <div class="setting-group">
           <label>{{ t('settings.provider') }}</label>
-          <select v-model="currentConfig.provider" @change="onProviderChange">
+          <select 
+            v-model="currentConfig.provider" 
+            @change="onProviderChange"
+            @click.stop
+            @touchstart.stop
+          >
             <option value="openai">OpenAI</option>
             <option value="claude">Claude</option>
             <option value="gemini">Gemini</option>
@@ -62,27 +80,36 @@
         <div class="setting-group">
           <label>{{ t('settings.model') }}</label>
           <input 
-            v-model="currentProviderConfig.modelId" 
+            :value="currentProviderConfig.modelId" 
+            @input="updateProviderConfig('modelId', $event.target.value)"
             type="text" 
             :placeholder="t('settings.modelPlaceholder')"
+            @click.stop
+            @touchstart.stop
           />
         </div>
         
         <div class="setting-group">
           <label>{{ t('settings.apiKey') }}</label>
           <input 
-            v-model="currentProviderConfig.apiKey" 
+            :value="currentProviderConfig.apiKey" 
+            @input="updateProviderConfig('apiKey', $event.target.value)"
             type="password" 
             :placeholder="t('settings.apiKeyPlaceholder')"
+            @click.stop
+            @touchstart.stop
           />
         </div>
         
         <div class="setting-group">
           <label>{{ t('settings.baseUrl') }}</label>
           <input 
-            v-model="currentProviderConfig.baseUrl" 
+            :value="currentProviderConfig.baseUrl" 
+            @input="updateProviderConfig('baseUrl', $event.target.value)"
             type="text" 
             :placeholder="t('settings.baseUrlPlaceholder')"
+            @click.stop
+            @touchstart.stop
           />
         </div>
         
@@ -195,7 +222,13 @@ export default {
     Zap,
     AlertCircle
   },
-  setup() {
+  props: {
+    hideButton: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup(props) {
     const { t } = useI18n()
     const isOpen = ref(false)
     const showSettings = ref(false)
@@ -230,8 +263,19 @@ export default {
     
     // AI配置
     const currentConfig = reactive({})
-    const currentProviderConfig = computed(() => {
-      return currentConfig.models?.[currentConfig.provider] || {}
+    
+    // 当前提供商配置的响应式对象
+    const currentProviderConfig = computed({
+      get() {
+        return currentConfig.models?.[currentConfig.provider] || {}
+      },
+      set(newValue) {
+        if (currentConfig.models && currentConfig.provider) {
+          Object.assign(currentConfig.models[currentConfig.provider], newValue)
+          // 立即保存配置
+          updateAIConfig(currentConfig)
+        }
+      }
     })
     
     const isConfigured = computed(() => {
@@ -246,10 +290,11 @@ export default {
     // 监听配置变化，实时更新
     watch(
       () => currentProviderConfig.value,
-      (newConfig) => {
-        if (newConfig && currentConfig.provider) {
+      (newConfig, oldConfig) => {
+        if (newConfig && currentConfig.provider && JSON.stringify(newConfig) !== JSON.stringify(oldConfig)) {
           // 实时更新配置到全局
           updateAIConfig(currentConfig)
+          console.log('Provider config changed, saved to localStorage')
           // 清除之前的测试结果
           testResult.value = null
         }
@@ -260,10 +305,13 @@ export default {
     // 监听提供商变化
     watch(
       () => currentConfig.provider,
-      () => {
-        // 提供商变化时也更新配置
-        updateAIConfig(currentConfig)
-        testResult.value = null
+      (newProvider, oldProvider) => {
+        if (newProvider && newProvider !== oldProvider) {
+          // 提供商变化时也更新配置
+          updateAIConfig(currentConfig)
+          console.log('Provider changed, saved to localStorage:', newProvider)
+          testResult.value = null
+        }
       }
     )
     
@@ -317,10 +365,45 @@ export default {
       showSettings.value = false
     }
     
+    // 切换设置面板
+    const toggleSettings = () => {
+      showSettings.value = !showSettings.value
+      console.log('设置面板状态:', showSettings.value)
+    }
+    
+    // 更新提供商配置
+    const updateProviderConfig = (key, value) => {
+      if (currentConfig.models && currentConfig.provider) {
+        // 确保提供商配置对象存在
+        if (!currentConfig.models[currentConfig.provider]) {
+          currentConfig.models[currentConfig.provider] = {}
+        }
+        
+        // 更新配置值
+        currentConfig.models[currentConfig.provider][key] = value
+        
+        // 立即保存到localStorage
+        updateAIConfig(currentConfig)
+        console.log(`AI配置已更新 ${key}:`, value)
+        
+        // 清除测试结果
+        testResult.value = null
+      }
+    }
+    
+    // 配置变更处理
+    const onConfigChange = () => {
+      // 立即保存配置到localStorage
+      updateAIConfig(currentConfig)
+      console.log('AI配置已更新:', currentConfig)
+    }
+    
     // 提供商变更
     const onProviderChange = () => {
-      // 提供商变更时的处理已经通过 watch 自动完成
-      // 这里保留函数以防模板中有引用
+      // 提供商变更时立即保存配置
+      onConfigChange()
+      // 清除测试结果
+      testResult.value = null
     }
     
     // 测试连接
@@ -347,11 +430,16 @@ export default {
     
     // 保存设置
     const saveSettings = () => {
-      // 配置已经通过 watch 实时更新，这里只需要关闭设置面板
+      // 确保配置保存到localStorage
+      updateAIConfig(currentConfig)
+      
+      // 关闭设置面板
       showSettings.value = false
       
       // 添加保存成功提示
       addMessage('ai', t('settings.saveSuccess'))
+      
+      console.log('AI设置已保存:', currentConfig)
     }
     
     // 发送消息
@@ -721,6 +809,9 @@ export default {
       canSend,
       toggleAI,
       closeAI,
+      toggleSettings,
+      updateProviderConfig,
+      onConfigChange,
       onProviderChange,
       testConnection,
       saveSettings,
@@ -963,6 +1054,18 @@ export default {
   padding: 1rem;
   flex: 1;
   overflow-y: auto;
+  
+  // 移动端优化
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    
+    // 防止点击事件冒泡导致面板关闭
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    
+    // 确保设置面板在移动端有足够的空间
+    min-height: 400px;
+  }
 }
 
 .setting-group {
@@ -1007,6 +1110,12 @@ export default {
   display: flex;
   gap: 0.5rem;
   margin-top: 1rem;
+  
+  // 移动端优化
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
   
   button {
     flex: 1;

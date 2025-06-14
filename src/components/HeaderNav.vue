@@ -90,7 +90,7 @@ export default {
       default: () => ({})
     }
   },
-  emits: ['toggle-sidebar', 'toggle-ai'],
+  emits: ['toggle-sidebar', 'toggle-ai', 'toggle-search'],
   setup(props, { emit }) {
     const router = useRouter()
     const route = useRoute()
@@ -170,7 +170,7 @@ export default {
     
     // 切换搜索
     const toggleSearch = () => {
-      console.log('Toggle search')
+      emit('toggle-search')
     }
     
     // 切换AI助手
@@ -458,7 +458,11 @@ export default {
     }
   }
   
-  .search-btn,
+  .search-btn {
+    // 搜索按钮在所有屏幕尺寸都显示
+    display: flex;
+  }
+  
   .ai-btn {
     @media (max-width: 640px) {
       display: none;

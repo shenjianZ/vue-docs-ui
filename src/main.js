@@ -5,6 +5,7 @@ import './styles/main.scss'
 import { loadConfig, getSiteInfo, loadAllConfigs, updatePageMeta } from './utils/config'
 import { loadAIConfig } from './config/ai'
 import { i18n } from './locales/index.js'
+import { initPWA } from './utils/pwa'
 import './utils/debug'
 
 // 导入页面组件
@@ -52,7 +53,10 @@ async function initApp() {
     app.use(i18n)
     app.mount('#app')
     
-    console.log('✅ 应用初始化完成，AI功能已就绪')
+    // 初始化PWA功能
+    await initPWA()
+    
+    console.log('✅ 应用初始化完成，AI功能和PWA已就绪')
   } catch (error) {
     console.error('❌ 应用初始化失败:', error)
     // 即使配置加载失败，也继续启动应用

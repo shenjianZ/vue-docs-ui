@@ -5,6 +5,7 @@
       @toggle-sidebar="toggleSidebar"
       @toggle-theme="toggleTheme"
       @toggle-ai="toggleAI"
+      @toggle-search="toggleSearch"
     />
     
     <div class="docs-container">
@@ -35,7 +36,25 @@
     </div>
     
     <!-- AI助手 -->
-    <AIAssistant ref="aiAssistant" />
+    <AIAssistant ref="aiAssistant" :hide-button="true" />
+    
+    <!-- 搜索模态框 -->
+    <SearchModal ref="searchModal" />
+    
+    <!-- 阅读进度 -->
+    <ReadingProgress ref="readingProgress" />
+    
+    <!-- 反馈系统 -->
+    <FeedbackSystem ref="feedbackSystem" :hide-button="true" />
+    
+    <!-- 浮动动作按钮 -->
+    <FloatingActionButton
+      :has-ai-notifications="hasAINotifications"
+      :has-feedback-notifications="hasFeedbackNotifications"
+      @ai-click="handleAIClick"
+      @feedback-click="handleFeedbackClick"
+      @search-click="handleSearchClick"
+    />
   </div>
 </template>
 
@@ -46,6 +65,10 @@ import HeaderNav from './HeaderNav.vue'
 import SidebarNav from './SidebarNav.vue'
 import TableOfContents from './TableOfContents.vue'
 import AIAssistant from './AIAssistant.vue'
+import SearchModal from './SearchModal.vue'
+import ReadingProgress from './ReadingProgress.vue'
+import FeedbackSystem from './FeedbackSystem.vue'
+import FloatingActionButton from './FloatingActionButton.vue'
 import { getDefaultTocConfig } from '../utils'
 import type { DocsConfig, TocItem } from '../types'
 
@@ -62,6 +85,13 @@ const route = useRoute()
 const sidebarOpen = ref(false)
 const tocHeaders = ref<TocItem[]>([])
 const aiAssistant = ref<any>(null)
+const searchModal = ref<any>(null)
+const readingProgress = ref<any>(null)
+const feedbackSystem = ref<any>(null)
+
+// 通知状态
+const hasAINotifications = ref(false)
+const hasFeedbackNotifications = ref(false)
 
 // 计算TOC配置
 const tocConfig = computed(() => getDefaultTocConfig(props.config))
@@ -99,7 +129,23 @@ function toggleAI() {
   aiAssistant.value?.toggleAI()
 }
 
-// 初始化主题
+function toggleSearch() {
+  searchModal.value?.openSearch()
+}
+
+function handleAIClick() {
+  aiAssistant.value?.toggleAI()
+}
+
+function handleFeedbackClick() {
+  feedbackSystem.value?.toggleFeedbackPanel()
+}
+
+function handleSearchClick() {
+  searchModal.value?.openSearch()
+}
+
+// 初始化主题和通知状态
 onMounted(() => {
   const themeConfig = props.config?.theme
   const savedTheme = localStorage.getItem('theme')
@@ -135,6 +181,19 @@ onMounted(() => {
   } else {
     document.documentElement.classList.remove('dark')
   }
+  
+  // 检查通知状态
+  setTimeout(() => {
+    // 检查AI助手是否有未读消息
+    if (aiAssistant.value?.hasUnreadMessages) {
+      hasAINotifications.value = aiAssistant.value.hasUnreadMessages
+    }
+    
+    // 检查反馈系统是否有新通知
+    if (feedbackSystem.value?.hasNewNotifications) {
+      hasFeedbackNotifications.value = feedbackSystem.value.hasNewNotifications
+    }
+  }, 1000)
 })
 
 // 导出函数供外部使用

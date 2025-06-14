@@ -119,5 +119,51 @@ export default {
     },
     darkMode: '深色模式',
     lightMode: '浅色模式'
+  },
+  
+  // 阅读进度相关
+  readingProgress: {
+    estimatedTime: '预计阅读',
+    progress: '进度',
+    words: '字',
+    minutes: '分钟',
+    autoScroll: '自动滚动',
+    stopAutoScroll: '停止自动滚动',
+    startAutoScroll: '开始自动滚动',
+    backToTop: '回到顶部',
+    showInfo: '显示信息',
+    hideInfo: '隐藏信息'
+  },
+  
+  // 反馈系统相关
+  feedback: {
+    title: '页面反馈',
+    triggerTitle: '给文档提供反馈',
+    quickQuestion: '这个页面对您有帮助吗？',
+    helpful: '有帮助',
+    notHelpful: '没帮助',
+    feedbackType: '反馈类型',
+    selectType: '请选择',
+    types: {
+      content: '内容问题',
+      typo: '错别字',
+      missing: '缺少信息',
+      suggestion: '改进建议',
+      bug: '页面错误',
+      question: '疑问',
+      other: '其他'
+    },
+    detailLabel: '详细说明',
+    detailPlaceholder: '请详细描述您的反馈...',
+    contactLabel: '如有需要，允许我们联系您获取更多信息',
+    emailPlaceholder: '您的邮箱（可选）',
+    submit: '提交反馈',
+    cancel: '取消',
+    successMessage: '感谢您的反馈！',
+    stats: {
+      visitors: '访问',
+      helpful: '有用',
+      feedback: '反馈'
+    }
   }
 } 
