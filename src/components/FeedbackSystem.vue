@@ -395,6 +395,8 @@ defineExpose({
   @media (max-width: 480px) {
     width: calc(100vw - 2rem);
     right: -1rem;
+    max-height: 80vh;
+    overflow-y: auto;
   }
 }
 
@@ -634,6 +636,8 @@ defineExpose({
   @media (max-width: 768px) {
     right: 1rem;
     bottom: 5rem;
+    width: auto;
+    max-width: calc(100vw - 2rem);
   }
 }
 
