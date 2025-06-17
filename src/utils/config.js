@@ -42,7 +42,6 @@ export async function loadConfig(forceLang = null) {
   try {
     // 根据语言选择配置文件
     const configPath = targetLang === 'en' ? '/config/site.en.yaml' : '/config/site.yaml'
-    console.log(`尝试加载配置文件: ${configPath}`)
     
     const response = await fetch(configPath)
     if (!response.ok) {
@@ -50,15 +49,11 @@ export async function loadConfig(forceLang = null) {
     }
     
     const yamlText = await response.text()
-    console.log('YAML文本长度:', yamlText.length)
-    
     siteConfig = yaml.load(yamlText)
     
     if (!siteConfig) {
       throw new Error('YAML解析返回空值')
     }
-    
-    console.log('✅ 配置文件解析成功:', siteConfig)
     
     // 自动应用主题配置
     applyThemeFromConfig(siteConfig)
@@ -66,7 +61,7 @@ export async function loadConfig(forceLang = null) {
     return siteConfig
     
   } catch (error) {
-    console.error('❌ 配置加载失败，使用默认配置:', error)
+    console.error('配置加载失败，使用默认配置:', error)
     siteConfig = getDefaultConfig(targetLang)
     
     // 自动应用默认主题配置
@@ -103,6 +98,44 @@ export function getTocConfig() {
     enabled: true,
     title: "目录"
   }
+}
+
+// 获取页脚配置
+export function getFooterConfig() {
+  if (!siteConfig) {
+    console.warn('⚠️ siteConfig未加载，返回默认footer配置')
+    return {
+      enabled: true,
+      copyright: "© 2024 Documentation Site. All rights reserved.",
+      links: [],
+      social: [],
+      repository: {
+        url: "https://github.com/shenjianZ/vue-docs-ui",
+        branch: "master"
+      }
+    }
+  }
+  
+  const footerConfig = siteConfig.footer || {
+    enabled: true,
+    copyright: "© 2024 Documentation Site. All rights reserved.",
+    links: [],
+    social: [],
+    repository: {
+      url: "https://github.com/shenjianZ/vue-docs-ui",
+      branch: "master"
+    }
+  }
+  
+  // 确保 repository 配置存在
+  if (!footerConfig.repository) {
+    footerConfig.repository = {
+      url: "https://github.com/shenjianZ/vue-docs-ui",
+      branch: "master"
+    }
+  }
+  
+  return footerConfig
 }
 
 // 获取AI配置

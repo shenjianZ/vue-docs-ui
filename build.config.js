@@ -22,6 +22,11 @@ export const buildConfig = {
     removeConsole: false,  // 开发环境保留所有 console
   },
   
+  // 调试构建配置
+  debug: {
+    removeConsole: false,  // 调试构建保留所有 console
+  },
+  
   // 生产环境配置
   production: {
     removeConsole: true,

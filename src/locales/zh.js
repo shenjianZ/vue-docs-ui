@@ -33,6 +33,7 @@ export default {
     back: '返回',
     next: '下一页',
     prev: '上一页',
+    and: '和',
     toc: '目录',
     edit: '编辑此页',
     lastUpdated: '最后更新',
@@ -165,5 +166,45 @@ export default {
       helpful: '有用',
       feedback: '反馈'
     }
+  },
+  
+  // 页脚相关
+  footer: {
+    gettingStarted: '快速开始',
+    introduction: '介绍',
+    installation: '安装',
+    quickStart: '快速上手',
+    configuration: '配置说明',
+    advanced: '进阶指南',
+    customThemes: '自定义主题',
+    components: '组件开发',
+    apiReference: 'API 参考',
+    deployment: '部署',
+    community: '社区',
+    discussions: '讨论区',
+    issues: '问题反馈',
+    contributing: '贡献指南',
+    releases: '版本发布',
+    support: '帮助支持',
+    examples: '示例',
+    sourceCode: '源代码',
+    license: '开源许可',
+    backToTop: '回到顶部',
+    builtWith: '构建技术：',
+    lastUpdated: '最后更新',
+    connectMe: '联系我',
+    github: 'GitHub',
+    email: '邮箱',
+    twitter: 'Twitter',
+    discord: 'Discord',
+    bilibili: '哔哩哔哩',
+    qq: 'QQ',
+    wechat: '微信',
+    weibo: '微博',
+    douyin: '抖音',
+    zhihu: '知乎',
+    youtube: 'YouTube',
+    telegram: 'Telegram',
+    tiktok: 'TikTok'
   }
 } 

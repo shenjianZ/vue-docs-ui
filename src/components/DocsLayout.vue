@@ -26,6 +26,8 @@
         <div class="docs-content">
           <router-view @toc-updated="updateTocHeaders" />
         </div>
+        <!-- Footer 组件 -->
+        <FooterNav :config="config" />
       </main>
       
       <TableOfContents 
@@ -69,6 +71,7 @@ import SearchModal from './SearchModal.vue'
 import ReadingProgress from './ReadingProgress.vue'
 import FeedbackSystem from './FeedbackSystem.vue'
 import FloatingActionButton from './FloatingActionButton.vue'
+import FooterNav from './FooterNav.vue'
 import { getDefaultTocConfig } from '../utils'
 import type { DocsConfig, TocItem } from '../types'
 
@@ -269,13 +272,15 @@ defineExpose({
   min-width: 0; // 防止grid item溢出
   width: 100%;
   max-width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .docs-content {
   width: 100%;
   padding: 2rem;
   box-sizing: border-box;
-  min-height: 100%;
+  flex: 1;
   
   // 确保内容不会超出容器
   overflow-wrap: break-word;

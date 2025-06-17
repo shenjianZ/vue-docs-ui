@@ -33,6 +33,7 @@ export default {
     back: 'Back',
     next: 'Next',
     prev: 'Previous',
+    and: 'and',
     toc: 'Table of Contents',
     edit: 'Edit this page',
     lastUpdated: 'Last updated',
@@ -165,5 +166,45 @@ export default {
       helpful: 'helpful',
       feedback: 'feedback'
     }
+  },
+  
+  // Footer related
+  footer: {
+    gettingStarted: 'Getting Started',
+    introduction: 'Introduction',
+    installation: 'Installation',
+    quickStart: 'Quick Start',
+    configuration: 'Configuration',
+    advanced: 'Advanced',
+    customThemes: 'Custom Themes',
+    components: 'Components',
+    apiReference: 'API Reference',
+    deployment: 'Deployment',
+    community: 'Community',
+    discussions: 'Discussions',
+    issues: 'Issues',
+    contributing: 'Contributing',
+    releases: 'Releases',
+    support: 'Support',
+    examples: 'Examples',
+    sourceCode: 'Source Code',
+    license: 'License',
+    backToTop: 'Back to Top',
+    builtWith: 'Built with',
+    lastUpdated: 'Last updated',
+    connectMe: 'Connect Me',
+    github: 'GitHub',
+    email: 'Email',
+    twitter: 'Twitter',
+    discord: 'Discord',
+    bilibili: 'Bilibili',
+    qq: 'QQ',
+    wechat: 'WeChat',
+    weibo: 'Weibo',
+    douyin: 'Douyin',
+    zhihu: 'Zhihu',
+    youtube: 'YouTube',
+    telegram: 'Telegram',
+    tiktok: 'TikTok'
   }
 } 

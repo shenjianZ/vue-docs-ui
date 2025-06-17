@@ -25,6 +25,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:lib": "vite build --config vite.config.lib.js",
+    "build:lib:debug": "vite build --config vite.config.lib.js --mode debug",
     "preview": "vite preview",
     "serve": "vite preview",
     "type-check": "vue-tsc --noEmit",

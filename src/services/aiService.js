@@ -1,5 +1,5 @@
 import OpenAI from 'openai'
-import { getAIConfig, getCurrentAIProvider } from '../config/ai.js'
+import { getAIConfig, getCurrentAIProvider, loadAIConfig } from '../config/ai.js'
 
 // AI服务类
 class AIService {
@@ -76,7 +76,7 @@ class AIService {
       const messages = [
         {
           role: 'system',
-          content: this.getSystemPrompt(context)
+          content: await this.getSystemPrompt(context)
         },
         {
           role: 'user',
@@ -124,9 +124,22 @@ class AIService {
   }
 
   // 获取系统提示词
-  getSystemPrompt(context = {}) {
-    const aiConfig = getAIConfig()
-    const basePrompt = aiConfig.systemPrompt || `你是Vue Docs UI文档网站的AI助手。你的任务是帮助用户理解文档内容，回答技术问题，并提供有用的指导。
+  async getSystemPrompt(context = {}) {
+    // 确保从配置文件加载最新的AI配置
+    const aiConfig = await loadAIConfig()
+    
+    console.log('🎯 获取系统提示词, AI配置:', {
+      hasSystemPrompt: !!aiConfig.systemPrompt,
+      systemPromptLength: aiConfig.systemPrompt?.length || 0,
+      systemPromptPreview: aiConfig.systemPrompt?.substring(0, 50) || '无'
+    })
+    
+    // 优先使用配置文件中的systemPrompt
+    let basePrompt = aiConfig.systemPrompt
+    
+    // 如果配置中没有systemPrompt或为空，使用默认的
+    if (!basePrompt || basePrompt.trim() === '') {
+      basePrompt = `你是Vue Docs UI文档网站的AI助手。你的任务是帮助用户理解文档内容，回答技术问题，并提供有用的指导。
 
 请遵循以下原则：
 1. 提供准确、有用的技术信息
@@ -141,6 +154,10 @@ class AIService {
 - 文档编写和维护
 - 前端开发最佳实践
 - 技术概念解释`
+      console.log('⚠️ 使用默认系统提示词')
+    } else {
+      console.log('✅ 使用配置文件中的系统提示词')
+    }
 
     // 如果有当前页面上下文，添加相关信息
     if (context.currentPage) {

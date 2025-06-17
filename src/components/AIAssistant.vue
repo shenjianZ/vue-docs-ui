@@ -118,6 +118,10 @@
             <Zap :size="14" />
             {{ testing ? t('settings.testing') : t('settings.testConnection') }}
           </button>
+          <button class="debug-btn" @click="debugConfig">
+            <AlertCircle :size="14" />
+            调试配置
+          </button>
           <button class="save-btn" @click="saveSettings">
             <Save :size="14" />
             {{ t('settings.closeSettings') }}

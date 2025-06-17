@@ -95,4 +95,61 @@ toc:
   enabled: true
   
   # TOC title
-  title: "On This Page" 
+  title: "On This Page"
+
+# Footer Configuration
+footer:
+  enabled: true
+  copyright: "© 2024 Vue Docs UI. All rights reserved."
+  lastUpdated: "2025-6-12"
+  repository:
+    url: "https://github.com/shenjianZ/vue-docs-ui"
+    branch: "master"
+  links:
+    - title: "Documentation"
+      link: "/guide/introduction"
+    - title: "GitHub"
+      link: "https://github.com/shenjianZ/vue-docs-ui"
+      external: true
+    - title: "License"
+      link: "/license"
+  social:
+    - name: "email"
+      url: "mailto:contact@example.com"
+      icon: "mail"
+    - name: "github"
+      url: "https://github.com/shenjianZ"
+      icon: "github"
+    - name: "bilibili"
+      url: "https://space.bilibili.com/443299209"
+      icon: "bilibili"
+    - name: "qq"
+      url: "mqqapi://card/show_pslcard?src_type=internal&version=1&uin=20798388286&card_type=person&source=qrcode"
+      icon: "qq"
+    - name: "wechat"
+      url: "weixin://dl/add?zlt2629496476520"
+      icon: "wechat"
+    # - name: "weibo"
+    #   url: "https://weibo.com/yourhandle"
+    #   icon: "weibo"
+    # - name: "douyin"
+    #   url: "https://www.douyin.com/user/yourhandle"
+    #   icon: "douyin"
+    # - name: "zhihu"
+    #   url: "https://www.zhihu.com/people/yourhandle"
+    #   icon: "zhihu"
+    # - name: "youtube"
+    #   url: "https://youtube.com/@yourhandle"
+    #   icon: "youtube"
+    # - name: "twitter"
+    #   url: "https://twitter.com/yourhandle"
+    #   icon: "twitter"
+    # - name: "discord"
+    #   url: "https://discord.gg/yourinvite"
+    #   icon: "discord"
+    # - name: "telegram"
+    #   url: "https://t.me/yourhandle"
+    #   icon: "telegram"
+    # - name: "tiktok"
+    #   url: "https://tiktok.com/@yourhandle"
+    #   icon: "tiktok"
